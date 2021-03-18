@@ -1,0 +1,21 @@
+img {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+@keyframes loaded {
+  0% {
+    opacity: 0.1;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+img.loaded:not(.has-error) {
+  animation: loaded 300ms ease-in-out;
+}
+img.has-error {
+  content: url('data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==');
+}
