@@ -49,9 +49,10 @@ const Login = ({
     fetch(ApiRoot + '/login', {
       method: 'POST',
       body: formData,
+      credentials: 'include',
     })
-      .then(() => {
-        setSubmitSuccess(true);
+      .then((res) => {
+        console.log('Login res: ', res);
       })
       .catch((err) => setErr(err.message))
       .finally(() => setSubmitting(false));
