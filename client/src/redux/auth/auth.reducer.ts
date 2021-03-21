@@ -5,9 +5,12 @@ import {
   SET_PROFILE_PIC,
   SET_EMAIL,
 } from "../constants";
-import { AuthReducer } from "./auth.types";
+import { AuthReducer, defaultAuthState } from "./auth.types";
 
-const userinfoReducer = (state: AuthReducer = {}, action: any) => {
+const userinfoReducer = (
+  state: AuthReducer = defaultAuthState,
+  action: any
+) => {
   switch (action.type) {
     case LOGIN:
       return {
