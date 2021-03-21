@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import { Button, TextField } from '@material-ui/core';
 import { handleKeyPress } from '../../assets/ts/utilities';
 import { AuthMode } from './LoginPage';
+import { ApiRoot } from '../../assets/ts/api';
 
 const initialState = {
   email: '',
   password: '',
-  confirmPassword: '',
+  // confirmPassword: '',
   username: '',
 };
 
@@ -37,33 +38,30 @@ const Register = ({
     // isEmailValid
     // doPasswordsMatch
 
-    if (
-      !state.email ||
-      !state.password ||
-      !state.username ||
-      !state.confirmPassword
-    ) {
+    if (!state.email || !state.password || !state.username) {
       setErrorMsg({
         email: !state.email ? 'Enter a valid email' : '',
         password: 'Enter your password',
         username: 'Enter username',
-        confirmPassword: 'Confirm your password',
       });
       setSubmitting(false);
       return;
     }
     setErrorMsg(initialState);
-    fetch('', {
+    let formData = new FormData();
+    formData.append('username', state.username);
+    formData.append('email', state.email);
+    formData.append('password', state.password);
+
+    fetch(ApiRoot + '/signup', {
       method: 'POST',
-      headers: {
-        'Content-type': 'application/json',
-      },
-      body: JSON.stringify(state),
+      body: formData,
     })
-      .then(() => {
+      .then((res) => {
+        console.log(res);
         setSubmitSuccess(true);
       })
-      .catch((err) => setErr(err))
+      .catch((err) => setErr(err.message))
       .finally(() => setSubmitting(false));
   };
 
@@ -104,7 +102,7 @@ const Register = ({
         onChange={handleChange}
         onKeyDown={onKeyDown}
       />
-      <TextField
+      {/* <TextField
         id='register-confirm-password'
         name='confirmPassword'
         error={!!errorMsg.confirmPassword}
@@ -114,13 +112,13 @@ const Register = ({
         value={state.confirmPassword}
         onChange={handleChange}
         onKeyDown={onKeyDown}
-      />
+      /> */}
       <Button
         color='primary'
         variant='contained'
         disabled={submitting}
         onClick={handleSubmit}
-        style={{ marginTop: 20, textTransform: 'none' }}
+        style={{ marginTop: 20 }}
       >
         {submitting ? 'Please wait...' : 'Register'}
       </Button>
