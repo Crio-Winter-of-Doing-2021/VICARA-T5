@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import { Button, TextField } from '@material-ui/core';
 import { handleKeyPress } from '../../assets/ts/utilities';
 import { AuthMode } from './LoginPage';
+import { ApiRoot } from '../../assets/ts/api';
 
 const initialState = {
-  email: '',
+  username: '',
   password: '',
 };
 
@@ -24,7 +25,6 @@ const Login = ({
     e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
   ) => {
     const { name, value } = e.target;
-    console.log({ name, value });
     setState({ ...state, [name]: value });
   };
 
@@ -33,39 +33,40 @@ const Login = ({
     setErr('');
     setSubmitSuccess(false);
 
-    if (!(!!state.email && !!state.password)) {
+    if (!(!!state.username && !!state.password)) {
       setErrorMsg({
-        email: !state.email ? 'Enter a valid email' : '',
+        username: !state.username ? 'Enter a valid username' : '',
         password: 'Enter your password',
       });
       setSubmitting(false);
       return;
     }
     setErrorMsg(initialState);
-    fetch('', {
+
+    let formData = new FormData();
+    formData.append('username', state.username);
+    formData.append('password', state.password);
+    fetch(ApiRoot + '/login', {
       method: 'POST',
-      headers: {
-        'Content-type': 'application/json',
-      },
-      body: JSON.stringify(state),
+      body: formData,
     })
       .then(() => {
         setSubmitSuccess(true);
       })
-      .catch((err) => setErr(err))
+      .catch((err) => setErr(err.message))
       .finally(() => setSubmitting(false));
   };
 
   return (
     <>
       <TextField
-        id='login-email'
-        name='email'
-        error={!!errorMsg.email}
-        helperText={errorMsg.email}
-        label='Email'
-        // type='email'
-        value={state.email}
+        id='login-username'
+        name='username'
+        error={!!errorMsg.username}
+        helperText={errorMsg.username}
+        label='Username'
+        // type='username'
+        value={state.username}
         onChange={(e) => handleChange(e)}
         onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) =>
           handleKeyPress(e, handleSubmit)
@@ -89,7 +90,7 @@ const Login = ({
         variant='contained'
         disabled={submitting}
         onClick={handleSubmit}
-        style={{ marginTop: 20, textTransform: 'none' }}
+        style={{ marginTop: 20 }}
       >
         {submitting ? 'Logging in...' : 'Login'}
       </Button>

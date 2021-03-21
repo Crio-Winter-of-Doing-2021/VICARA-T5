@@ -5,6 +5,7 @@ import {
   Route,
   Switch,
 } from 'react-router-dom';
+import MaterialTheme from './assets/tsx/MaterialTheme';
 import PageLoader from './components/common/Loaders/PageLoader';
 import FilePreview from './components/FilePreview/FilePreview';
 import ListFolder from './pages/Drive/ListFolder';
@@ -19,21 +20,23 @@ import {
 
 const App = () => {
   return (
-    <Router>
-      <Suspense fallback={<PageLoader />}>
-        <Switch>
-          <Route exact path={LOGIN_ROUTE} component={LoginPage} />
-          <Route
-            exact
-            path={FOLDERS}
-            component={() => <Redirect to={FOLDERS + '/root'} />}
-          />
-          <Route path={FOLDER_ROUTE} component={ListFolder} />
-          <Route path={FILE_ROUTE} component={FilePreview} />
-          <Route component={NotFound} />
-        </Switch>
-      </Suspense>
-    </Router>
+    <MaterialTheme>
+      <Router>
+        <Suspense fallback={<PageLoader />}>
+          <Switch>
+            <Route exact path={LOGIN_ROUTE} component={LoginPage} />
+            <Route
+              exact
+              path={FOLDERS}
+              component={() => <Redirect to={FOLDERS + '/root'} />}
+            />
+            <Route path={FOLDER_ROUTE} component={ListFolder} />
+            <Route path={FILE_ROUTE} component={FilePreview} />
+            <Route component={NotFound} />
+          </Switch>
+        </Suspense>
+      </Router>
+    </MaterialTheme>
   );
 };
 
