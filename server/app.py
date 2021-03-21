@@ -10,9 +10,11 @@ from werkzeug.utils import secure_filename
 import os, uuid
 from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient, __version__
 import datetime
+from flask_cors import CORS
 
 app = Flask(__name__)
 
+#CORS(app, supports_credentials=True)
 #setting variables
 UPLOAD_FOLDER = './uploads'
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
@@ -41,6 +43,7 @@ def signup():
         if signup_user:
             resp = jsonify('Username already taken')
             resp.status_code = 409
+            resp.headers.add("Access-Control-Allow-Origin", "*")
             return resp
 
         #storing hashed password
@@ -54,6 +57,7 @@ def signup():
         container_client = blob_service_client.create_container(container_name)
 
         resp = jsonify('User added successfully')
+        resp.headers.add("Access-Control-Allow-Origin", "*")
         resp.status_code = 200
         return resp
         
@@ -70,11 +74,15 @@ def login():
             if pbkdf2_sha256.verify(request.form['password'], signin_user['password']):
                 session['username'] = request.form['username']
                 resp = jsonify('Successfully logged in')
+                resp.headers.add("Access-Control-Allow-Origin", "http://localhost:3000")
+                resp.headers.add("Access-Control-Allow-Credentials", "true")
                 resp.status_code = 200
                 return resp
 
         resp = jsonify('Invalid username password combination')
         resp.status_code = 403
+        resp.headers.add("Access-Control-Allow-Origin", "http://localhost:3000")
+        resp.headers.add("Access-Control-Allow-Credentials",  "true")
         return resp
 
     return render_template('signin.html')
@@ -84,23 +92,36 @@ def addFolder():
     #if user is logged in
     if 'username' in session:
         
-        userCollection = mongo.drive[username]
+        userCollection = mongo.drive[session['username']]
+
+
+        if 'currentDir' in request.form:
+            currentDir = request.form['currentDir']
+        else:
+            currentDir = '/root'
+
+        if 'absolutePath' in request.form:
+            absolutePath = request.form['absolutePath']
+        else:
+            absolutePath = '/root'
 
         userCollection.insert_one({'name' : secure_filename(request.form['folderName']),
         'created' : datetime.datetime.utcnow(),
         'accessed' : datetime.datetime.utcnow(),
         'modified' : datetime.datetime.utcnow(),
         'type' : 'folder',
-        'parentDir': request.headers['currentDir'],
-        'absolutePath': request.headers['absolutePath']
+        'parentDir': currentDir,
+        'absolutePath': absolutePath
         })
 
         resp = jsonify("Successfully added folder")
         resp.status_code = 200
+        resp.headers.add("Access-Control-Allow-Origin", "*")
         return resp
 
     resp = jsonify('Login to be able to upload a file')
     resp.status_code = 403
+    resp.headers.add("Access-Control-Allow-Origin", "*")
     return resp
 
 @app.route('/upload', methods = ['POST'])
@@ -122,13 +143,29 @@ def upload():
         #adding file metadata to mongoDB as part of users collection
         userCollection = mongo.drive[username]
 
+        if 'cloudProvider' in request.form:
+            cloudProvider = request.form['cloudProvider']
+        else:
+            cloudProvider = 'Azure'
+
+        if 'currentDir' in request.form:
+            currentDir = request.form['currentDir']
+        else:
+            currentDir = '/root'
+
+        if 'absolutePath' in request.form:
+            absolutePath = request.form['absolutePath']
+        else:
+            absolutePath = '/root'
+
         userCollection.insert_one({'name' : secure_filename(f.filename),
         'created' : datetime.datetime.utcnow(),
         'accessed' : datetime.datetime.utcnow(),
         'modified' : datetime.datetime.utcnow(),
         'type' : 'file',
-        'parentDir': request.headers['currentDir'],
-        'absolutePath': request.headers['absolutePath']
+        'parentDir': currentDir,
+        'absolutePath': absolutePath,
+        'cloudProvider': cloudProvider
         })
 
         #delete file after upload from server
@@ -136,17 +173,60 @@ def upload():
 
         resp = jsonify("Successfully uploaded file")
         resp.status_code = 200
+        resp.headers.add("Access-Control-Allow-Origin", "*")
         return resp
 
     resp = jsonify('Login to be able to upload a file')
     resp.status_code = 403
+    resp.headers.add("Access-Control-Allow-Origin", "*")
     return resp
+
+@app.route('/getFolderItems', methods = ['POST'])
+def getFolderItems():
+    if 'username' in session:
+        if 'absolutePath' in request.form:
+            absolutePath = request.form['absolutePath']
+        else:
+            absolutePath = '/root'
+        userCollection = mongo.drive[session['username']]
+        listJson = json.loads(dumps(userCollection.find({ "absolutePath": absolutePath })))        
+        resp = jsonify(listJson)
+        resp.status_code = 200
+        resp.headers.add("Access-Control-Allow-Origin", "http://localhost:3000")
+        resp.headers.add("Access-Control-Allow-Credentials",  "true")
+        return resp
+    resp = jsonify('Login to be able to use EDrive')
+    resp.status_code = 400
+    resp.headers.add("Access-Control-Allow-Origin", "http://localhost:3000")
+    resp.headers.add("Access-Control-Allow-Credentials",  "true")
+    return resp
+
+@app.route('/getFile', methods = ['GET'])
+def getFile():
+    #TODO create way of fetching file
+    if 'username' in session:
+        #TODO: Implement a different name for blobs that user given name to handle same name for files at different paths, or directly give abs path name
+        userCollection = mongo.drive[session['username']]
+
+        blob = BlobClient.from_connection_string(conn_str=azure_connection_string, container_name=session['username'], blob_name=request.form['fileName'])
+
+        fname = './downloads/' + request.form['fileName']
+        #TODO: Implement this asynchronously
+        with open(fname, "wb") as my_blob:
+            blob_data = blob.download_blob()
+            blob_data.readinto(my_blob)
+
+        resp = jsonify('File downloaded successfully')
+        resp.status_code = 200
+        resp.headers.add("Access-Control-Allow-Origin", "*")
+        return resp
 
 @app.route('/logout', methods = ['GET'])
 def logout():
     #clearing session
     session.pop('username', None)
     resp = jsonify("Successfully logged out")
+    resp.headers.add("Access-Control-Allow-Origin", "*")
     return resp
 
 
