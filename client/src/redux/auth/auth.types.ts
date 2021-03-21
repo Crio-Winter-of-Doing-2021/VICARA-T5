@@ -1,3 +1,5 @@
+import { LOGIN, LOGOUT } from "../constants";
+
 export interface Userinfo {
   displayName: string;
   email: string;
@@ -17,3 +19,13 @@ export const defaultAuthState: Userinfo = {
 };
 
 export type AuthReducer = Userinfo;
+
+interface LoginAction {
+  type: typeof LOGIN;
+  user: Partial<AuthReducer>;
+}
+interface LogoutAction {
+  type: typeof LOGOUT;
+}
+
+export type AuthActions = LoginAction | LogoutAction;

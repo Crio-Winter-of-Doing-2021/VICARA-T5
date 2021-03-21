@@ -1,10 +1,10 @@
-import { IObject } from "./interfaces";
+import { IObject } from './interfaces';
 
 export const isObjEmpty = (obj: any): boolean =>
   Object.keys(obj).length === 0 && obj.constructor === Object;
 
 export const isNull = (value: any): boolean =>
-  typeof value === "object" && !value;
+  typeof value === 'object' && !value;
 
 export const mapObjToArray = <T extends IObject, TItem extends IObject>(
   obj: T
@@ -27,11 +27,11 @@ export const convertArrayToObj = <T extends IObject, TObj extends IObject>(
   }, initialState) as TObj;
 };
 
-export const splitStringOnUppercase = (string = "") => {
+export const splitStringOnUppercase = (string = '') => {
   return string
     .match(/([A-Z]?[^A-Z]*)/g)!
     .slice(0, -1)
-    .join(" ");
+    .join(' ');
 };
 
 export const deletePropFromObject = <T extends IObject>(
@@ -71,11 +71,11 @@ export const partitionArray = <T>(array: Array<T>, chunkSize: number) =>
     .map((e, i) => (i % chunkSize === 0 ? array.slice(i, i + chunkSize) : null))
     .filter((e) => e);
 
-export const capitalize = (string = "") =>
+export const capitalize = (string = '') =>
   string
-    .split(" ")
+    .split(' ')
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
+    .join(' ');
 
 export const scaleArray = (arr: Array<number>, scaleFactor = 1) =>
   arr.map((x) => x * scaleFactor);
@@ -86,10 +86,21 @@ export const range = (start: number, stop: number, step = 1): number[] =>
     .map((x, y) => x + y * step);
 
 export const handleKeyPress = (
-  e: React.KeyboardEvent<HTMLDivElement>,
+  e: React.KeyboardEvent<HTMLElement>,
   callback: any
 ) => {
   if (e.keyCode === 13) {
     callback();
   }
+};
+
+export const isEmailValid = (email: string) => {
+  const re = /^[^\s@]+@[^\s@]+$/;
+  return re.test(email);
+};
+
+// To check a password between 8 to 15 characters which contain at least one lowercase letter, one uppercase letter, one numeric digit, and one special character
+export const isPasswordValid = (password: string) => {
+  const re = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,15}$/;
+  return password.match(re);
 };

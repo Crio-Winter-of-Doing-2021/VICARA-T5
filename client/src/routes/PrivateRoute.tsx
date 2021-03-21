@@ -1,8 +1,8 @@
-import React from "react";
-import { useSelector } from "react-redux";
-import { Route, Redirect, useLocation } from "react-router-dom";
-import { LOGIN_ROUTE } from "./routes";
-// import { selectUserId } from "../redux/userinfo/userinfo.selectors";
+import React from 'react';
+import { useSelector } from 'react-redux';
+import { Route, Redirect, useLocation } from 'react-router-dom';
+import { selectUserId } from '../redux/auth/auth.selectors';
+import { LOGIN_ROUTE } from './routes';
 
 interface IProps {
   // authLoading: boolean;
@@ -28,7 +28,7 @@ const PrivateRoute = ({
             </div>
           );
         else {
-          localStorage.setItem("redirect_to", location.pathname);
+          localStorage.setItem('redirect_to', location.pathname);
           return (
             <Redirect
               to={{
