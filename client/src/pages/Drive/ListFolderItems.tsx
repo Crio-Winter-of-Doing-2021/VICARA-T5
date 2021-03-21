@@ -48,6 +48,7 @@ const ListFolderItems = () => {
     fetch(ApiRoot + '/getFolderItems', {
       body: formData,
       method: 'POST',
+      credentials: 'include',
     })
       .then((res) => {
         console.log(res);
