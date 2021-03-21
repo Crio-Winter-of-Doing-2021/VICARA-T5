@@ -6,7 +6,7 @@ interface IProps {
 
 const File = ({ name }: IProps) => {
   return (
-    <div className='w4'>
+    <div className='w4 items-center justify-center flex'>
       <span>{name}</span>
     </div>
   );
