@@ -1,0 +1,17 @@
+.left {
+  display: flex;
+  flex-direction: column;
+  margin: 10px;
+  width: 20vw;
+}
+
+.left > button {
+  margin: 5px auto;
+  width: fit-content;
+}
+
+.right {
+  display: flex;
+  width: 80vw;
+  margin: 10px;
+}

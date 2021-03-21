@@ -1,3 +1,4 @@
-export const LOGIN_ROUTE = "/";
-export const FOLDER_ROUTE = "/folder/:id";
-export const FILE_ROUTE = "/file/:id";
+export const LOGIN_ROUTE = '/';
+export const FOLDERS = '/folders';
+export const FOLDER_ROUTE = '/folders/:id';
+export const FILE_ROUTE = '/files/:id';
