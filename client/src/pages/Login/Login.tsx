@@ -44,16 +44,25 @@ const Login = ({
     setErrorMsg(initialState);
 
     let formData = new FormData();
+
+    // for (const name in state) {
+    //   formData.append(name, state[name]);
+    // }
+
     formData.append('username', state.username);
     formData.append('password', state.password);
+
     fetch(ApiRoot + '/login', {
       method: 'POST',
       body: formData,
-      credentials: 'include',
+      // credentials: 'include',
     })
       .then((res) => {
         console.log('Login res: ', res);
+        if (res.status === 200) setSubmitSuccess(true);
+        return res.json();
       })
+      .then((resJson) => console.log('resJson: ', resJson))
       .catch((err) => setErr(err.message))
       .finally(() => setSubmitting(false));
   };

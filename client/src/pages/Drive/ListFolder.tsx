@@ -14,7 +14,7 @@ interface MatchProps {
 
 const ListFolder = ({ match }: RouteComponentProps<MatchProps>) => {
   const { id } = match.params;
-  const [selectedFile, setSelectedFile] = useState();
+  const [selectedFile, setSelectedFile] = useState<File | undefined>();
 
   const changeHandler = (event: any) => {
     const file = event.target.files[0];
@@ -24,13 +24,19 @@ const ListFolder = ({ match }: RouteComponentProps<MatchProps>) => {
   };
 
   const uploadFile = () => {
-    fetch(ApiRoot + '/upload', {
+    if (!selectedFile) {
+      return;
+    }
+    const formData = new FormData();
+    formData.append('file', selectedFile);
+
+    const options = {
       method: 'POST',
-      // headers: {
-      //   'Content-type': 'application/json',
-      // },
-      // body: JSON.stringify(state),
-    })
+      body: formData,
+    };
+    // delete options.headers['Content-Type'];
+
+    fetch(ApiRoot + '/upload', options)
       .then(() => {
         // setSubmitSuccess(true);
       })
