@@ -1,4 +1,4 @@
-import { LOGIN, LOGOUT } from "../constants";
+import { LOGIN, LOGOUT, SET_IS_AUTHENTICATED } from '../constants';
 
 export interface Userinfo {
   displayName: string;
@@ -7,15 +7,17 @@ export interface Userinfo {
   uid: string;
   emailVerified: boolean;
   providerId: string;
+  isAuthenticated: boolean;
 }
 
 export const defaultAuthState: Userinfo = {
-  displayName: "",
-  email: "",
-  photoURL: "",
-  uid: "",
+  isAuthenticated: false,
+  displayName: '',
+  email: '',
+  photoURL: '',
+  uid: '',
   emailVerified: false,
-  providerId: "",
+  providerId: '',
 };
 
 export type AuthReducer = Userinfo;
@@ -27,5 +29,9 @@ interface LoginAction {
 interface LogoutAction {
   type: typeof LOGOUT;
 }
+interface SetIsAuthenticatedAction {
+  type: typeof SET_IS_AUTHENTICATED;
+  isAuthenticated: boolean;
+}
 
-export type AuthActions = LoginAction | LogoutAction;
+export type AuthActions = LoginAction | LogoutAction | SetIsAuthenticatedAction;
