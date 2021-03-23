@@ -3,6 +3,8 @@ import { Button, TextField } from '@material-ui/core';
 import { handleKeyPress } from '../../assets/ts/utilities';
 import { AuthMode } from './LoginPage';
 import { ApiRoot } from '../../assets/ts/api';
+import { login, saveAuthStateToStorage } from '../../redux/auth/auth.actions';
+import { useDispatch } from 'react-redux';
 
 const initialState = {
   username: '',
@@ -28,14 +30,18 @@ const Login = ({
     setState({ ...state, [name]: value });
   };
 
+  const dispatch = useDispatch();
+
   const handleSubmit = () => {
     setSubmitting(true);
     setErr('');
     setSubmitSuccess(false);
 
-    if (!(!!state.username && !!state.password)) {
+    const { username, password } = state;
+
+    if (!(!!username && !!password)) {
       setErrorMsg({
-        username: !state.username ? 'Enter a valid username' : '',
+        username: !username ? 'Enter a valid username' : '',
         password: 'Enter your password',
       });
       setSubmitting(false);
@@ -49,8 +55,8 @@ const Login = ({
     //   formData.append(name, state[name]);
     // }
 
-    formData.append('username', state.username);
-    formData.append('password', state.password);
+    formData.append('username', username);
+    formData.append('password', password);
 
     fetch(ApiRoot + '/login', {
       method: 'POST',
@@ -58,8 +64,15 @@ const Login = ({
       // credentials: 'include',
     })
       .then((res) => {
-        console.log('Login res: ', res);
-        if (res.status === 200) setSubmitSuccess(true);
+        // console.log('Login res: ', res);
+        if (res.status === 200) {
+          setSubmitSuccess(true);
+          dispatch(login({ displayName: username })); // sets isAuthenticated to true
+          saveAuthStateToStorage({
+            displayName: username,
+            isAuthenticated: true,
+          });
+        }
         return res.json();
       })
       .then((resJson) => console.log('resJson: ', resJson))

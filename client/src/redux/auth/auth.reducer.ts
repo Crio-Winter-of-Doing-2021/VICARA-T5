@@ -4,8 +4,9 @@ import {
   SET_USERNAME,
   SET_PROFILE_PIC,
   SET_EMAIL,
-} from "../constants";
-import { AuthReducer, defaultAuthState } from "./auth.types";
+  SET_IS_AUTHENTICATED,
+} from '../constants';
+import { AuthReducer, defaultAuthState } from './auth.types';
 
 const userinfoReducer = (
   state: AuthReducer = defaultAuthState,
@@ -14,10 +15,17 @@ const userinfoReducer = (
   switch (action.type) {
     case LOGIN:
       return {
+        ...state,
         ...action.user,
+        isAuthenticated: true,
+      };
+    case SET_IS_AUTHENTICATED:
+      return {
+        ...state,
+        isAuthenticated: action.isAuthenticated,
       };
     case LOGOUT:
-      return {};
+      return defaultAuthState;
     case SET_USERNAME:
       return {
         ...state,

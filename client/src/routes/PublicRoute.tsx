@@ -1,46 +1,30 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Route, Redirect, useLocation } from 'react-router-dom';
-import { selectUserId } from '../redux/auth/auth.selectors';
-import { LOGIN_ROUTE } from './routes';
+import { Route, Redirect } from 'react-router-dom';
+import { selectIsAuthenticated } from '../redux/auth/auth.selectors';
+import { FOLDERS } from './routes';
 
 interface IProps {
-  // authLoading: boolean;
   component: any;
   [x: string]: any;
 }
 
-const PrivateRoute = ({
-  // authLoading,
-  component: Component,
-  ...rest
-}: IProps) => {
-  const isAuthenticated = useSelector(selectUserId);
-  const location = useLocation();
+const PublicRoute = ({ component: Component, ...rest }: IProps) => {
+  const isAuthenticated = useSelector(selectIsAuthenticated);
   return (
     <Route
       {...rest}
       component={(props: any) => {
-        if (!!isAuthenticated)
+        if (!isAuthenticated)
           return (
             <div>
               <Component {...props} />
             </div>
           );
-        else {
-          localStorage.setItem('redirect_to', location.pathname);
-          return (
-            <Redirect
-              to={{
-                pathname: LOGIN_ROUTE,
-                state: { prevPath: location.pathname },
-              }}
-            />
-          );
-        }
+        return <Redirect to={{ pathname: FOLDERS }} />;
       }}
     />
   );
 };
 
-export default PrivateRoute;
+export default PublicRoute;
