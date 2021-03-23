@@ -1,13 +1,14 @@
 import React from 'react';
+import { IItem } from '../pages/Drive/ListFolderItems';
 
 interface IProps {
-  name: string;
+  file: IItem;
 }
 
-const File = ({ name }: IProps) => {
+const File = ({ file }: IProps) => {
   return (
     <div className='w4 items-center justify-center flex'>
-      <span>{name}</span>
+      <span>{file.name}</span>
     </div>
   );
 };

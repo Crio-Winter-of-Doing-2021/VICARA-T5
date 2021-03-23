@@ -3,7 +3,7 @@ import { ApiRoot } from '../../assets/ts/api';
 import File from '../../components/File';
 import Folder from '../../components/Folder';
 
-interface IItem {
+export interface IItem {
   _id: string;
   name: string;
   created: string;
@@ -14,9 +14,43 @@ interface IItem {
   absolutePath: string;
 }
 
+const defaultFolders: IItem[] = [
+  {
+    _id: '123',
+    name: 'Folder1',
+    created: new Date().toJSON(),
+    accessed: new Date().toJSON(),
+    modified: new Date().toJSON(),
+    type: 'folder',
+    parentDir: '/root',
+    absolutePath: '/root',
+  },
+  {
+    _id: '456',
+    name: 'Folder2',
+    created: new Date().toJSON(),
+    accessed: new Date().toJSON(),
+    modified: new Date().toJSON(),
+    type: 'folder',
+    parentDir: '/root',
+    absolutePath: '/root',
+  },
+  {
+    _id: '789',
+    name: 'Folder3',
+    created: new Date().toJSON(),
+    accessed: new Date().toJSON(),
+    modified: new Date().toJSON(),
+    type: 'folder',
+    parentDir: '/root',
+    absolutePath: '/root',
+  },
+];
+const defaultFiles: IItem[] = [];
+
 const ListFolderItems = () => {
-  const [files, setFiles] = useState<IItem[]>([]);
-  const [folders, setFolders] = useState<IItem[]>([]);
+  const [files, setFiles] = useState<IItem[]>(defaultFiles);
+  const [folders, setFolders] = useState<IItem[]>(defaultFolders);
   const [errMsg, setErrMsg] = useState('');
   const [err, setErr] = useState(false);
 
@@ -49,10 +83,10 @@ const ListFolderItems = () => {
   return (
     <div className='flex list-folder-items-container flex-wrap'>
       {folders.map((x, i) => (
-        <Folder folderName={x.name} key={i} />
+        <Folder folder={x} key={i} />
       ))}
       {files.map((x, i) => (
-        <File name={x.name} key={i} />
+        <File file={x} key={i} />
       ))}
       {err && <div className='red'>{errMsg}</div>}
     </div>
