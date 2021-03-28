@@ -11,7 +11,7 @@ export enum AuthMode {
 const LoginPage = () => {
   const [authMode, setAuthMode] = useState(AuthMode.Login);
   return (
-    <div className='flex' style={{ height: '100vh' }}>
+    <div className='flex' style={{ height: '70vh' }}>
       <Card style={{ width: 'fit-content', margin: 'auto' }}>
         <form>
           <div className='flex flex-column ma4'>
