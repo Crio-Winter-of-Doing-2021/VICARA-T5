@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { Route, Redirect, useLocation } from 'react-router-dom';
-import { selectUserId } from '../redux/auth/auth.selectors';
+import { selectIsAuthenticated } from '../redux/auth/auth.selectors';
 import { LOGIN_ROUTE } from './routes';
 
 interface IProps {
@@ -15,13 +15,13 @@ const PrivateRoute = ({
   component: Component,
   ...rest
 }: IProps) => {
-  const isAuthenticated = useSelector(selectUserId);
+  const isAuthenticated = useSelector(selectIsAuthenticated);
   const location = useLocation();
   return (
     <Route
       {...rest}
       component={(props: any) => {
-        if (!!isAuthenticated)
+        if (isAuthenticated)
           return (
             <div>
               <Component {...props} />

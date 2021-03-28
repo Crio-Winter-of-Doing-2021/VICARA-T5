@@ -3,44 +3,56 @@ import { ApiRoot } from '../../assets/ts/api';
 import File from '../../components/File';
 import Folder from '../../components/Folder';
 
-const items = [
+export interface IItem {
+  _id: string;
+  name: string;
+  created: string;
+  accessed: string;
+  modified: string;
+  type: 'file' | 'folder';
+  parentDir: string;
+  absolutePath: string;
+}
+
+const defaultFolders: IItem[] = [
   {
+    _id: '123',
     name: 'Folder1',
+    created: new Date().toJSON(),
+    accessed: new Date().toJSON(),
+    modified: new Date().toJSON(),
     type: 'folder',
+    parentDir: '/root',
+    absolutePath: '/root',
   },
   {
+    _id: '456',
     name: 'Folder2',
+    created: new Date().toJSON(),
+    accessed: new Date().toJSON(),
+    modified: new Date().toJSON(),
     type: 'folder',
+    parentDir: '/root',
+    absolutePath: '/root',
   },
   {
-    name: 'File1',
-    type: 'file',
-  },
-  {
+    _id: '789',
     name: 'Folder3',
+    created: new Date().toJSON(),
+    accessed: new Date().toJSON(),
+    modified: new Date().toJSON(),
     type: 'folder',
-  },
-  {
-    name: 'Folder4',
-    type: 'folder',
-  },
-  {
-    name: 'File2',
-    type: 'file',
-  },
-  {
-    name: 'File3',
-    type: 'file',
-  },
-  {
-    name: 'File4',
-    type: 'file',
+    parentDir: '/root',
+    absolutePath: '/root',
   },
 ];
+const defaultFiles: IItem[] = [];
 
 const ListFolderItems = () => {
-  const [files, setFiles] = useState<any[]>([]);
-  const [folders, setFolders] = useState<any[]>([]);
+  const [files, setFiles] = useState<IItem[]>(defaultFiles);
+  const [folders, setFolders] = useState<IItem[]>(defaultFolders);
+  const [errMsg, setErrMsg] = useState('');
+  const [err, setErr] = useState(false);
 
   useEffect(() => {
     let formData = new FormData();
@@ -52,21 +64,31 @@ const ListFolderItems = () => {
     })
       .then((res) => {
         console.log(res);
-        // res.filter((x) => x.type === 'folder');
-        // res.filter((x) => x.type === 'file');
-        // setFolderItems(res);
+        if (res.status === 400) setErr(true);
+        return res.json();
       })
-      .catch((err) => console.log('Error fetching files: ', err));
+      .then((resJson) => {
+        console.log('resJson: ', resJson);
+        if (err) {
+          setErrMsg(resJson);
+          return;
+        }
+        const dirs = resJson.filter((x: IItem) => x.type === 'folder');
+        const fls = resJson.filter((x: IItem) => x.type === 'file');
+        setFolders(dirs);
+        setFiles(fls);
+      })
+      .catch((e) => console.log('Error fetching files: ', e));
   }, []);
   return (
     <div className='flex list-folder-items-container flex-wrap'>
-      {items.map((x, i) =>
-        x.type === 'folder' ? (
-          <Folder folderName={x.name} key={i} />
-        ) : (
-          <File name={x.name} key={i} />
-        )
-      )}
+      {folders.map((x, i) => (
+        <Folder folder={x} key={i} />
+      ))}
+      {files.map((x, i) => (
+        <File file={x} key={i} />
+      ))}
+      {err && <div className='red'>{errMsg}</div>}
     </div>
   );
 };

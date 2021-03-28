@@ -61,6 +61,7 @@ const Register = ({
         console.log(res);
         setSubmitSuccess(true);
       })
+      .then((resJson) => console.log('resJson: ', resJson))
       .catch((err) => setErr(err.message))
       .finally(() => setSubmitting(false));
   };
