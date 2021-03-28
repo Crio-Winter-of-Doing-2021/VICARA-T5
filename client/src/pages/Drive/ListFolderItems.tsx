@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { ApiRoot } from '../../assets/ts/api';
 import File from '../../components/File';
 import Folder from '../../components/Folder';
+import { selectDisplayName } from '../../redux/auth/auth.selectors';
 
 export interface IItem {
   _id: string;
@@ -53,6 +55,7 @@ const ListFolderItems = () => {
   const [folders, setFolders] = useState<IItem[]>(defaultFolders);
   const [errMsg, setErrMsg] = useState('');
   const [err, setErr] = useState(false);
+  const username = useSelector(selectDisplayName);
 
   useEffect(() => {
     let formData = new FormData();
@@ -61,6 +64,9 @@ const ListFolderItems = () => {
       body: formData,
       method: 'POST',
       credentials: 'include',
+      headers: {
+        username,
+      },
     })
       .then((res) => {
         console.log(res);
