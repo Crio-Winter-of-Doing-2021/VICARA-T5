@@ -4,6 +4,8 @@ import { handleKeyPress } from '../../assets/ts/utilities';
 import { AuthMode } from './LoginPage';
 import { ApiRoot } from '../../assets/ts/api';
 import { Cookies } from 'react-cookie';
+import { login, saveAuthStateToStorage } from '../../redux/auth/auth.actions';
+import { useDispatch } from 'react-redux';
 
 const initialState = {
   username: '',
@@ -29,14 +31,18 @@ const Login = ({
     setState({ ...state, [name]: value });
   };
 
+  const dispatch = useDispatch();
+
   const handleSubmit = () => {
     setSubmitting(true);
     setErr('');
     setSubmitSuccess(false);
 
-    if (!(!!state.username && !!state.password)) {
+    const { username, password } = state;
+
+    if (!(!!username && !!password)) {
       setErrorMsg({
-        username: !state.username ? 'Enter a valid username' : '',
+        username: !username ? 'Enter a valid username' : '',
         password: 'Enter your password',
       });
       setSubmitting(false);
@@ -45,18 +51,35 @@ const Login = ({
     setErrorMsg(initialState);
 
     let formData = new FormData();
-    formData.append('username', state.username);
-    formData.append('password', state.password);
+
+    // for (const name in state) {
+    //   formData.append(name, state[name]);
+    // }
+
+    formData.append('username', username);
+    formData.append('password', password);
+
     fetch(ApiRoot + '/login', {
       method: 'POST',
       body: formData,
-      credentials: 'include',
+      // credentials: 'include',
     })
       .then((res) => {
         console.log('Login res: ', res);
         console.log(res.headers.get('username'));
         //Cookies.('session', res.headers['username1'])
+        // console.log('Login res: ', res);
+        if (res.status === 200) {
+          setSubmitSuccess(true);
+          dispatch(login({ displayName: username })); // sets isAuthenticated to true
+          saveAuthStateToStorage({
+            displayName: username,
+            isAuthenticated: true,
+          });
+        }
+        return res.json();
       })
+      .then((resJson) => console.log('resJson: ', resJson))
       .catch((err) => setErr(err.message))
       .finally(() => setSubmitting(false));
   };

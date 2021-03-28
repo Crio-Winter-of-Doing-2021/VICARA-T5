@@ -25,6 +25,11 @@ const MaterialTheme = ({ children }: { children: React.ReactElement }) => {
             color: '#fff',
           },
         },
+        MuiInputBase: {
+          input: {
+            margin: '5px',
+          },
+        },
         MuiButton: {
           root: {
             textTransform: 'none',

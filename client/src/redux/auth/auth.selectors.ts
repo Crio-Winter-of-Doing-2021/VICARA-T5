@@ -1,29 +1,34 @@
-import { createSelector } from "reselect";
-import { AuthReducer } from "./auth.types";
+import { createSelector } from 'reselect';
+import { AuthReducer } from './auth.types';
 
 export const selectUser = (state: any): AuthReducer => state.auth;
 
+export const selectIsAuthenticated = createSelector(
+  [selectUser],
+  (auth) => auth.isAuthenticated
+);
+
 export const selectUserId = createSelector(
   [selectUser],
-  (auth): string => auth.uid || ""
+  (auth): string => auth.uid || ''
 );
 
 export const selectProviderId = createSelector(
   [selectUser],
-  (auth) => auth.providerId || ""
+  (auth) => auth.providerId || ''
 );
 
 export const selectDisplayName = createSelector(
   [selectUser],
-  (auth): string => auth.displayName || ""
+  (auth): string => auth.displayName || ''
 );
 export const selectEmail = createSelector(
   [selectUser],
-  (auth): string => auth.email || ""
+  (auth): string => auth.email || ''
 );
 export const selectPhotoURL = createSelector(
   [selectUser],
-  (auth) => auth.photoURL || ""
+  (auth) => auth.photoURL || ''
 );
 
 export const selectEmailVerified = createSelector(

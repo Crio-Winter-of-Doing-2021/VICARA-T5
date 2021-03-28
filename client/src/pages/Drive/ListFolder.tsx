@@ -7,14 +7,19 @@ import { RouteComponentProps } from 'react-router';
 import './ListFolder.css';
 import ListFolderItems from './ListFolderItems';
 import { ApiRoot } from '../../assets/ts/api';
+import DriveItemMenu from '../../components/DriveItemMenu/DriveItemMenu';
+import { useSelector } from 'react-redux';
+import { selectSelectedItem } from '../../redux/drive/drive.selectors';
 
 interface MatchProps {
   id: string;
 }
 
 const ListFolder = ({ match }: RouteComponentProps<MatchProps>) => {
-  const { id } = match.params;
-  const [selectedFile, setSelectedFile] = useState();
+  // const { id } = match.params;
+  const [selectedFile, setSelectedFile] = useState<File | undefined>();
+
+  const selectedItem = useSelector(selectSelectedItem);
 
   const changeHandler = (event: any) => {
     const file = event.target.files[0];
@@ -24,13 +29,19 @@ const ListFolder = ({ match }: RouteComponentProps<MatchProps>) => {
   };
 
   const uploadFile = () => {
-    fetch(ApiRoot + '/upload', {
+    if (!selectedFile) {
+      return;
+    }
+    const formData = new FormData();
+    formData.append('file', selectedFile);
+
+    const options = {
       method: 'POST',
-      // headers: {
-      //   'Content-type': 'application/json',
-      // },
-      // body: JSON.stringify(state),
-    })
+      body: formData,
+    };
+    // delete options.headers['Content-Type'];
+
+    fetch(ApiRoot + '/upload', options)
       .then(() => {
         // setSubmitSuccess(true);
       })
@@ -40,7 +51,10 @@ const ListFolder = ({ match }: RouteComponentProps<MatchProps>) => {
 
   return (
     <div className='flex flex-column items-center'>
-      <span>{id}</span>
+      {/* <span>{id}</span> */}
+      {selectedItem.id && selectedItem.type && (
+        <DriveItemMenu id={selectedItem.id} type={selectedItem.type} />
+      )}
       <div className='flex'>
         <div className='left'>
           <Button
