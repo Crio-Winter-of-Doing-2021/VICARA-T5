@@ -3,6 +3,7 @@ import { Button, TextField } from '@material-ui/core';
 import { handleKeyPress } from '../../assets/ts/utilities';
 import { AuthMode } from './LoginPage';
 import { ApiRoot } from '../../assets/ts/api';
+import { Cookies } from 'react-cookie';
 import { login, saveAuthStateToStorage } from '../../redux/auth/auth.actions';
 import { useDispatch } from 'react-redux';
 
@@ -64,6 +65,9 @@ const Login = ({
       // credentials: 'include',
     })
       .then((res) => {
+        console.log('Login res: ', res);
+        console.log(res.headers.get('username'));
+        //Cookies.('session', res.headers['username1'])
         // console.log('Login res: ', res);
         if (res.status === 200) {
           setSubmitSuccess(true);
