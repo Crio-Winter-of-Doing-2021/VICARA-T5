@@ -4,9 +4,10 @@ import { ApiRoot } from '../../assets/ts/api';
 import File from '../../components/File';
 import Folder from '../../components/Folder';
 import { selectDisplayName } from '../../redux/auth/auth.selectors';
+import { loadDriveStateFromStorage } from '../../redux/drive/drive.actions';
 
 export interface IItem {
-  _id: string;
+  _id: { $oid: string }; // FIXME:
   name: string;
   created: string;
   accessed: string;
@@ -17,40 +18,40 @@ export interface IItem {
 }
 
 const defaultFolders: IItem[] = [
-  {
-    _id: '123',
-    name: 'Folder1',
-    created: new Date().toJSON(),
-    accessed: new Date().toJSON(),
-    modified: new Date().toJSON(),
-    type: 'folder',
-    parentDir: '/root',
-    absolutePath: '/root',
-  },
-  {
-    _id: '456',
-    name: 'Folder2',
-    created: new Date().toJSON(),
-    accessed: new Date().toJSON(),
-    modified: new Date().toJSON(),
-    type: 'folder',
-    parentDir: '/root',
-    absolutePath: '/root',
-  },
-  {
-    _id: '789',
-    name: 'Folder3',
-    created: new Date().toJSON(),
-    accessed: new Date().toJSON(),
-    modified: new Date().toJSON(),
-    type: 'folder',
-    parentDir: '/root',
-    absolutePath: '/root',
-  },
+  // {
+  //   _id: '123',
+  //   name: 'Folder1',
+  //   created: new Date().toJSON(),
+  //   accessed: new Date().toJSON(),
+  //   modified: new Date().toJSON(),
+  //   type: 'folder',
+  //   parentDir: '/root',
+  //   absolutePath: '/root',
+  // },
+  // {
+  //   _id: '456',
+  //   name: 'Folder2',
+  //   created: new Date().toJSON(),
+  //   accessed: new Date().toJSON(),
+  //   modified: new Date().toJSON(),
+  //   type: 'folder',
+  //   parentDir: '/root',
+  //   absolutePath: '/root',
+  // },
+  // {
+  //   _id: '789',
+  //   name: 'Folder3',
+  //   created: new Date().toJSON(),
+  //   accessed: new Date().toJSON(),
+  //   modified: new Date().toJSON(),
+  //   type: 'folder',
+  //   parentDir: '/root',
+  //   absolutePath: '/root',
+  // },
 ];
 const defaultFiles: IItem[] = [];
 
-const ListFolderItems = () => {
+const ListFolderItems = ({ id }: { id: string }) => {
   const [files, setFiles] = useState<IItem[]>(defaultFiles);
   const [folders, setFolders] = useState<IItem[]>(defaultFolders);
   const [errMsg, setErrMsg] = useState('');
@@ -58,8 +59,9 @@ const ListFolderItems = () => {
   const username = useSelector(selectDisplayName);
 
   useEffect(() => {
+    // const location = window.location as any;
     let formData = new FormData();
-    // formData.append('absolutePath', '/root');
+    formData.append('absolutePath', loadDriveStateFromStorage().absolutePath);
     fetch(ApiRoot + '/getFolderItems', {
       body: formData,
       method: 'POST',
@@ -85,15 +87,19 @@ const ListFolderItems = () => {
         setFiles(fls);
       })
       .catch((e) => console.log('Error fetching files: ', e));
-  }, []);
+  }, [id, username]);
   return (
-    <div className='flex list-folder-items-container flex-wrap'>
-      {folders.map((x, i) => (
-        <Folder folder={x} key={i} />
-      ))}
-      {files.map((x, i) => (
-        <File file={x} key={i} />
-      ))}
+    <div className='flex flex-column'>
+      <div className='flex list-folder-items-container flex-wrap'>
+        {folders.map((x, i) => (
+          <Folder folder={x} key={i} />
+        ))}
+      </div>
+      <div className='flex list-folder-items-container flex-wrap'>
+        {files.map((x, i) => (
+          <File file={x} key={i} />
+        ))}
+      </div>
       {err && <div className='red'>{errMsg}</div>}
     </div>
   );

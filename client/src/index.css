@@ -16,3 +16,9 @@ code {
   text-decoration: none;
   color: unset;
 }
+
+.ow {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  hyphens: auto;
+}
