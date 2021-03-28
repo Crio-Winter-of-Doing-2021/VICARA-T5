@@ -3,6 +3,7 @@ import { Button, TextField } from '@material-ui/core';
 import { handleKeyPress } from '../../assets/ts/utilities';
 import { AuthMode } from './LoginPage';
 import { ApiRoot } from '../../assets/ts/api';
+import { Cookies } from 'react-cookie';
 
 const initialState = {
   username: '',
@@ -53,6 +54,8 @@ const Login = ({
     })
       .then((res) => {
         console.log('Login res: ', res);
+        console.log(res.headers.get('username'));
+        //Cookies.('session', res.headers['username1'])
       })
       .catch((err) => setErr(err.message))
       .finally(() => setSubmitting(false));
