@@ -3,7 +3,11 @@ import FolderIcon from '@material-ui/icons/Folder';
 import { Button } from '@material-ui/core';
 import { useHistory } from 'react-router';
 import { IItem } from '../pages/Drive/ListFolderItems';
-import { setSelectedItem } from '../redux/drive/drive.actions';
+import {
+  loadDriveStateFromStorage,
+  saveDriveStateToStorage,
+  setSelectedItem,
+} from '../redux/drive/drive.actions';
 import { useDispatch } from 'react-redux';
 
 interface IProps {
@@ -15,7 +19,8 @@ const Folder = ({ folder }: IProps) => {
   const dispatch = useDispatch();
 
   const handleFolderClick = () => {
-    dispatch(setSelectedItem({ type: folder.type, id: folder._id }));
+    // console.log('Clicked: ', folder._id);
+    dispatch(setSelectedItem({ type: folder.type, id: folder._id.$oid }));
   };
 
   return (
@@ -25,11 +30,16 @@ const Folder = ({ folder }: IProps) => {
         color='primary'
         className='w4'
         startIcon={<FolderIcon />}
-        onClick={handleFolderClick}
-        onDoubleClick={() =>
-          //   history.push(history.location.pathname + '/' + folderName)
-          history.push(folder._id)
-        }
+        // onClick={handleFolderClick}
+        onDoubleClick={() => {
+          history.push({ pathname: folder._id['$oid'] });
+          const { absolutePath } = loadDriveStateFromStorage();
+          // console.log(absolutePath);
+          saveDriveStateToStorage({
+            absolutePath: absolutePath + '/' + folder.name,
+            currentDir: folder.name,
+          });
+        }}
       >
         {folder.name}
       </Button>

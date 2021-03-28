@@ -3,9 +3,13 @@ import { Button, TextField } from '@material-ui/core';
 import { handleKeyPress } from '../../assets/ts/utilities';
 import { AuthMode } from './LoginPage';
 import { ApiRoot } from '../../assets/ts/api';
-import { Cookies } from 'react-cookie';
+// import { Cookies } from 'react-cookie';
 import { login, saveAuthStateToStorage } from '../../redux/auth/auth.actions';
 import { useDispatch } from 'react-redux';
+import {
+  defaultDriveState,
+  saveDriveStateToStorage,
+} from '../../redux/drive/drive.actions';
 
 const initialState = {
   username: '',
@@ -76,6 +80,7 @@ const Login = ({
             displayName: username,
             isAuthenticated: true,
           });
+          saveDriveStateToStorage(defaultDriveState);
         }
         return res.json();
       })

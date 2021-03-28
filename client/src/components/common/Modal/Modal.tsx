@@ -1,20 +1,21 @@
-import React from "react";
+import React from 'react';
 import {
   Button,
+  ButtonProps,
   Dialog,
   DialogActions,
   DialogTitle,
   DialogContent,
   IconButton,
-} from "@material-ui/core";
-import { Close } from "@material-ui/icons";
-import useModalStyle from "../../../assets/tsx/useModalStyle";
-import { IObject } from "../../../assets/ts/interfaces";
+} from '@material-ui/core';
+import { Close } from '@material-ui/icons';
+import useModalStyle from '../../../assets/tsx/useModalStyle';
+// import { IObject } from '../../../assets/ts/interfaces';
 
 interface DialogAction {
   onBtnClick: any;
   btnText: string;
-  btnStyle: IObject;
+  btnStyle: Partial<ButtonProps>;
 }
 
 interface ModalProps {
@@ -25,7 +26,6 @@ interface ModalProps {
   modalName: string;
   dialogTitle?: string;
   dialogTitleProps?: any;
-  displayDialogActions?: boolean;
   dialogActions?: DialogAction[];
   displayModalCloseBtn?: boolean;
   keepModalMounted?: boolean;
@@ -43,7 +43,6 @@ const Modal = ({
   modalName,
   dialogTitle,
   dialogTitleProps,
-  displayDialogActions,
   dialogActions,
   displayModalCloseBtn,
   keepModalMounted,
@@ -73,16 +72,16 @@ const Modal = ({
       <DialogTitle
         id={`${modalName}-title`}
         className={classes.modalHeader}
-        style={{ textAlign: "center" }}
+        style={{ textAlign: 'center' }}
       >
-        <span className={`${titleRed ? "red" : ""}`} {...dialogTitleProps}>
+        <span className={`${titleRed ? 'red' : ''}`} {...dialogTitleProps}>
           {dialogTitle}
         </span>
         {displayModalCloseBtn && (
           <IconButton
             className={classes.modalCloseButton}
             // key='close'
-            aria-label="Close"
+            aria-label='Close'
             // color='inherit'
             onClick={onClose}
           >
@@ -91,7 +90,7 @@ const Modal = ({
         )}
       </DialogTitle>
       <DialogContent {...contentProps}>{children}</DialogContent>
-      {displayDialogActions && dialogActions && dialogActions.length && (
+      {dialogActions && dialogActions.length && (
         <DialogActions>
           {dialogActions.map((action: DialogAction, i: number) => (
             <Button key={i} onClick={action.onBtnClick} {...action.btnStyle}>
