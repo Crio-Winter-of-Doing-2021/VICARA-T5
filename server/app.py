@@ -21,6 +21,9 @@ ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['SECRET_KEY'] = 'poplioLitten'
 app.config['CLOUD_SERVICE'] = 'azure'
+app.config['SESSION_COOKIE_HTTPONLY'] = False
+#app.config['SESSION_COOKIE_SAMESITE'] = None
+#app.config['SESSION_COOKIE_SECURE'] = True
 azure_connection_string = 'DefaultEndpointsProtocol=https;AccountName=vicarastorage;AccountKey=OUi5nVWhMI1BFwcgPVmkBxQJ5YuWVJAgjwwhHBj+adHfovwqF7k3GzikrwmcKJAfnCjTzybyQiLaAl/tq87gPg==;EndpointSuffix=core.windows.net'
 
 #creating the MongoDB Atlas client to connect to database
@@ -74,14 +77,21 @@ def login():
             if pbkdf2_sha256.verify(request.form['password'], signin_user['password']):
                 session['username'] = request.form['username']
                 resp = jsonify('Successfully logged in')
-                resp.headers.add("Access-Control-Allow-Origin", "http://localhost:3000")
+                resp.headers.add("Access-Control-Allow-Origin", "http://localhost:8080")
                 resp.headers.add("Access-Control-Allow-Credentials", "true")
+                resp.headers.add('Access-Control-Expose-Headers', 'username')
+                print(session)
+                resp.headers.add('username', request.form['username'])
+                resp.set_cookie('userID', request.form['username'])
+                #resp.headers.add('Set-Cookie','cross-site-cookie=bar; SameSite=None; Secure')
                 resp.status_code = 200
                 return resp
 
         resp = jsonify('Invalid username password combination')
         resp.status_code = 403
-        resp.headers.add("Access-Control-Allow-Origin", "http://localhost:3000")
+        resp.headers.add("Access-Control-Allow-Origin", "http://localhost:8080")
+        #resp.headers.add('Set-Cookie','cross-site-cookie=bar; SameSite=None; Secure')
+        #resp.headers.add('Set-Cookie', SameSite=None; Secure')
         resp.headers.add("Access-Control-Allow-Credentials",  "true")
         return resp
 
