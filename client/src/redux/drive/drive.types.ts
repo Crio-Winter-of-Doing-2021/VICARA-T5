@@ -1,19 +1,31 @@
-import { SET_SELECTED_ITEM } from '../constants';
+import { SET_DRIVE_STATE, SET_SELECTED_ITEM } from '../constants';
+
+export interface DriveReducer {
+  selected: SelectedItem;
+  driveState: DriveState;
+}
 
 export interface SelectedItem {
   id: string;
   type: 'file' | 'folder' | '';
 }
+export const defaultSelectedItem: SelectedItem = {
+  id: '',
+  type: '',
+};
 
-export interface DriveReducer {
-  selected: SelectedItem;
+export interface DriveState {
+  currentDir: string;
+  absolutePath: string;
 }
+export const defaultDriveState: DriveState = {
+  currentDir: '/root',
+  absolutePath: '/root',
+};
 
 export const driveReducerDefaultState: DriveReducer = {
-  selected: {
-    id: '',
-    type: '',
-  },
+  selected: defaultSelectedItem,
+  driveState: defaultDriveState,
 };
 
 interface SetSelectedItemAction {
@@ -21,4 +33,9 @@ interface SetSelectedItemAction {
   selected: SelectedItem;
 }
 
-export type DriveActions = SetSelectedItemAction;
+interface SetDriveStateAction {
+  type: typeof SET_DRIVE_STATE;
+  driveState: DriveState;
+}
+
+export type DriveActions = SetSelectedItemAction | SetDriveStateAction;

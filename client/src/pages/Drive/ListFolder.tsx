@@ -15,15 +15,17 @@ import {
 } from '../../assets/ts/api';
 import DriveItemMenu from '../../components/DriveItemMenu/DriveItemMenu';
 import { useSelector } from 'react-redux';
-import { selectSelectedItem } from '../../redux/drive/drive.selectors';
+import {
+  selectDriveState,
+  selectSelectedItem,
+} from '../../redux/drive/drive.selectors';
 import { selectDisplayName } from '../../redux/auth/auth.selectors';
 import Modal from '../../components/common/Modal/Modal';
 import { TextField } from '@material-ui/core';
 import { handleKeyPress } from '../../assets/ts/utilities';
-import { loadDriveStateFromStorage } from '../../redux/drive/drive.actions';
 
 interface MatchProps {
-  id: string;
+  id?: string;
 }
 
 const ListFolder = ({ match }: RouteComponentProps<MatchProps>) => {
@@ -32,8 +34,8 @@ const ListFolder = ({ match }: RouteComponentProps<MatchProps>) => {
   const [newFolderName, setNewFolderName] = useState('');
 
   const selectedItem = useSelector(selectSelectedItem);
-
   const username = useSelector(selectDisplayName);
+  const { absolutePath, currentDir } = useSelector(selectDriveState);
 
   // const changeHandler = (event: any) => {
 
@@ -51,7 +53,7 @@ const ListFolder = ({ match }: RouteComponentProps<MatchProps>) => {
 
     // const location = window.location as any;
     const formData = new FormData();
-    const { absolutePath, currentDir } = loadDriveStateFromStorage();
+    // const { absolutePath, currentDir } = loadDriveStateFromStorage();
     console.log(absolutePath);
     formData.append('file', file);
     formData.append(
@@ -80,7 +82,7 @@ const ListFolder = ({ match }: RouteComponentProps<MatchProps>) => {
 
   const onAddClick = () => {
     const formData = new FormData();
-    const { absolutePath, currentDir } = loadDriveStateFromStorage();
+    // const { absolutePath, currentDir } = loadDriveStateFromStorage();
     formData.append(CURRENT_DIR, currentDir);
     formData.append(ABSOLUTE_PATH, absolutePath);
     formData.append('folderName', newFolderName);
@@ -156,7 +158,7 @@ const ListFolder = ({ match }: RouteComponentProps<MatchProps>) => {
           </Button>
         </div>
         <div className='right'>
-          <ListFolderItems id={id} />
+          <ListFolderItems id={id || '/root'} />
         </div>
       </div>
     </div>

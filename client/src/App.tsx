@@ -1,11 +1,6 @@
 import React, { Suspense, lazy, useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
-import {
-  BrowserRouter as Router,
-  Redirect,
-  Route,
-  Switch,
-} from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import MaterialTheme from './assets/tsx/MaterialTheme';
 import PageLoader from './components/common/Loaders/PageLoader';
 import { loadAuthStateFromStorage, login } from './redux/auth/auth.actions';
@@ -50,11 +45,7 @@ const App = () => {
           <Appbar />
           <Switch>
             <PublicRoute exact path={LOGIN_ROUTE} component={LoginPage} />
-            <PrivateRoute
-              exact
-              path={FOLDERS}
-              component={() => <Redirect to={FOLDERS + '/root'} />}
-            />
+            <PrivateRoute exact path={FOLDERS} component={ListFolder} />
             <PrivateRoute path={FOLDER_ROUTE} component={ListFolder} />
             <PrivateRoute path={FILE_ROUTE} component={FilePreview} />
             <Route component={NotFound} />
