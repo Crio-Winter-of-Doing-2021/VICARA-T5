@@ -7,9 +7,11 @@ import { ApiRoot, LOGIN } from '../../assets/ts/api';
 import { login, saveAuthStateToStorage } from '../../redux/auth/auth.actions';
 import { useDispatch } from 'react-redux';
 import {
-  defaultDriveState,
+  loadDriveStateFromStorage,
   saveDriveStateToStorage,
+  setDriveState,
 } from '../../redux/drive/drive.actions';
+import { defaultDriveState } from '../../redux/drive/drive.types';
 
 const initialState = {
   username: '',
@@ -80,7 +82,7 @@ const Login = ({
             displayName: username,
             isAuthenticated: true,
           });
-          saveDriveStateToStorage(defaultDriveState);
+          dispatch(setDriveState(loadDriveStateFromStorage()));
         }
         return res.json();
       })
