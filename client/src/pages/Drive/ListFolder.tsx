@@ -1,12 +1,18 @@
 import React, { useState } from 'react';
 import { Button } from '@material-ui/core';
 import CreateNewFolderIcon from '@material-ui/icons/CreateNewFolder';
-// import CloudUploadIcon from '@material-ui/icons/CloudUpload';
+import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import { RouteComponentProps } from 'react-router';
 
 import './ListFolder.css';
 import ListFolderItems from './ListFolderItems';
-import { ApiRoot } from '../../assets/ts/api';
+import {
+  ABSOLUTE_PATH,
+  ADD_FOLDER,
+  ApiRoot,
+  CURRENT_DIR,
+  UPLOAD,
+} from '../../assets/ts/api';
 import DriveItemMenu from '../../components/DriveItemMenu/DriveItemMenu';
 import { useSelector } from 'react-redux';
 import { selectSelectedItem } from '../../redux/drive/drive.selectors';
@@ -49,13 +55,13 @@ const ListFolder = ({ match }: RouteComponentProps<MatchProps>) => {
     console.log(absolutePath);
     formData.append('file', file);
     formData.append(
-      'absolutePath',
+      ABSOLUTE_PATH,
       absolutePath
       // location.hasOwnProperty('state')
-      //   ? location.state['absolutePath'] || '/root'
+      //   ? location.state[ABSOLUTE_PATH] || '/root'
       //   : '/root'
     );
-    formData.append('currentDir', currentDir);
+    formData.append(CURRENT_DIR, currentDir);
 
     const options = {
       method: 'POST',
@@ -64,7 +70,7 @@ const ListFolder = ({ match }: RouteComponentProps<MatchProps>) => {
     };
     delete (options.headers as any)['Content-Type'];
 
-    fetch(ApiRoot + '/upload', options)
+    fetch(ApiRoot + UPLOAD, options)
       .then(() => {
         // setSubmitSuccess(true);
       })
@@ -75,10 +81,10 @@ const ListFolder = ({ match }: RouteComponentProps<MatchProps>) => {
   const onAddClick = () => {
     const formData = new FormData();
     const { absolutePath, currentDir } = loadDriveStateFromStorage();
-    formData.append('currentDir', currentDir);
-    formData.append('absolutePath', absolutePath);
+    formData.append(CURRENT_DIR, currentDir);
+    formData.append(ABSOLUTE_PATH, absolutePath);
     formData.append('folderName', newFolderName);
-    fetch(ApiRoot + '/addFolder', {
+    fetch(ApiRoot + ADD_FOLDER, {
       method: 'POST',
       body: formData,
       headers: { username },
@@ -94,7 +100,7 @@ const ListFolder = ({ match }: RouteComponentProps<MatchProps>) => {
         <DriveItemMenu id={selectedItem.id} type={selectedItem.type} />
       )}
       <div className='flex'>
-        <div className='left'>
+        <div className='left items-center'>
           <Button
             variant='contained'
             color='primary'
@@ -132,14 +138,22 @@ const ListFolder = ({ match }: RouteComponentProps<MatchProps>) => {
               }
             />
           </Modal>
-          {/* <Button
-            variant='contained'
-            color='secondary'
-            startIcon={<CloudUploadIcon />}
-          >
-            Upload File
-          </Button> */}
-          <input type='file' name='file' onChange={uploadFile} />
+          <label htmlFor='file-input'>
+            <Button
+              variant='contained'
+              color='secondary'
+              startIcon={<CloudUploadIcon />}
+            >
+              Upload File
+            </Button>
+          </label>
+          <input
+            id='file-input'
+            type='file'
+            name='file'
+            onChange={uploadFile}
+            className='dn'
+          />
         </div>
         <div className='right'>
           <ListFolderItems id={id} />

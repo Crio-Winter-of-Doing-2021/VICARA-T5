@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button, TextField } from '@material-ui/core';
 import { handleKeyPress } from '../../assets/ts/utilities';
 import { AuthMode } from './LoginPage';
-import { ApiRoot } from '../../assets/ts/api';
+import { ApiRoot, LOGIN } from '../../assets/ts/api';
 // import { Cookies } from 'react-cookie';
 import { login, saveAuthStateToStorage } from '../../redux/auth/auth.actions';
 import { useDispatch } from 'react-redux';
@@ -63,7 +63,7 @@ const Login = ({
     formData.append('username', username);
     formData.append('password', password);
 
-    fetch(ApiRoot + '/login', {
+    fetch(ApiRoot + LOGIN, {
       method: 'POST',
       body: formData,
       // credentials: 'include',
