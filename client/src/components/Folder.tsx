@@ -30,7 +30,7 @@ const Folder = ({ folder }: IProps) => {
         color='primary'
         className='w4'
         startIcon={<FolderIcon />}
-        // onClick={handleFolderClick}
+        onClick={handleFolderClick}
         onDoubleClick={() => {
           history.push({ pathname: folder._id['$oid'] });
           const { absolutePath } = loadDriveStateFromStorage();

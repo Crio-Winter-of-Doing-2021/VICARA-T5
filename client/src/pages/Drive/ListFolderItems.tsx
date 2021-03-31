@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { ApiRoot } from '../../assets/ts/api';
+import { ABSOLUTE_PATH, ApiRoot, GET_FOLDER_ITEMS } from '../../assets/ts/api';
 import File from '../../components/File';
 import Folder from '../../components/Folder';
 import { selectDisplayName } from '../../redux/auth/auth.selectors';
 import { loadDriveStateFromStorage } from '../../redux/drive/drive.actions';
 
 export interface IItem {
-  _id: { $oid: string }; // FIXME:
+  _id: { $oid: string };
   name: string;
   created: string;
   accessed: string;
@@ -17,43 +17,9 @@ export interface IItem {
   absolutePath: string;
 }
 
-const defaultFolders: IItem[] = [
-  // {
-  //   _id: '123',
-  //   name: 'Folder1',
-  //   created: new Date().toJSON(),
-  //   accessed: new Date().toJSON(),
-  //   modified: new Date().toJSON(),
-  //   type: 'folder',
-  //   parentDir: '/root',
-  //   absolutePath: '/root',
-  // },
-  // {
-  //   _id: '456',
-  //   name: 'Folder2',
-  //   created: new Date().toJSON(),
-  //   accessed: new Date().toJSON(),
-  //   modified: new Date().toJSON(),
-  //   type: 'folder',
-  //   parentDir: '/root',
-  //   absolutePath: '/root',
-  // },
-  // {
-  //   _id: '789',
-  //   name: 'Folder3',
-  //   created: new Date().toJSON(),
-  //   accessed: new Date().toJSON(),
-  //   modified: new Date().toJSON(),
-  //   type: 'folder',
-  //   parentDir: '/root',
-  //   absolutePath: '/root',
-  // },
-];
-const defaultFiles: IItem[] = [];
-
 const ListFolderItems = ({ id }: { id: string }) => {
-  const [files, setFiles] = useState<IItem[]>(defaultFiles);
-  const [folders, setFolders] = useState<IItem[]>(defaultFolders);
+  const [files, setFiles] = useState<IItem[]>([]);
+  const [folders, setFolders] = useState<IItem[]>([]);
   const [errMsg, setErrMsg] = useState('');
   const [err, setErr] = useState(false);
   const username = useSelector(selectDisplayName);
@@ -61,8 +27,8 @@ const ListFolderItems = ({ id }: { id: string }) => {
   useEffect(() => {
     // const location = window.location as any;
     let formData = new FormData();
-    formData.append('absolutePath', loadDriveStateFromStorage().absolutePath);
-    fetch(ApiRoot + '/getFolderItems', {
+    formData.append(ABSOLUTE_PATH, loadDriveStateFromStorage().absolutePath);
+    fetch(ApiRoot + GET_FOLDER_ITEMS, {
       body: formData,
       method: 'POST',
       credentials: 'include',

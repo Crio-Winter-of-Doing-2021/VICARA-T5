@@ -17,6 +17,7 @@ code {
   color: unset;
 }
 
+/* overflow wrap */
 .ow {
   overflow-wrap: break-word;
   word-wrap: break-word;
