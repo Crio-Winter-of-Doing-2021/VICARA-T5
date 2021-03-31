@@ -115,16 +115,19 @@ def addFolder():
         else:
             absolutePath = '/root'
 
-        userCollection.insert_one({'name' : secure_filename(request.form['folderName']),
-        'created' : datetime.datetime.utcnow(),
-        'accessed' : datetime.datetime.utcnow(),
-        'modified' : datetime.datetime.utcnow(),
-        'type' : 'folder',
-        'parentDir': currentDir,
-        'absolutePath': absolutePath
-        })
+        payload = {
+            'name' : secure_filename(request.form['folderName']),
+            'created' : datetime.datetime.utcnow(),
+            'accessed' : datetime.datetime.utcnow(),
+            'modified' : datetime.datetime.utcnow(),
+            'type' : 'folder',
+            'parentDir': currentDir,
+            'absolutePath': absolutePath
+        }
+        x = userCollection.insert_one(payload)
 
-        resp = jsonify("Successfully added folder")
+        # resp = jsonify("Successfully added folder")
+        resp = jsonify({**payload, '_id': x.inserted_id})
         resp.status_code = 200
         resp.headers.add("Access-Control-Allow-Origin", "*")
         return resp
@@ -168,20 +171,24 @@ def upload():
         else:
             absolutePath = '/root'
 
-        userCollection.insert_one({'name' : secure_filename(f.filename),
-        'created' : datetime.datetime.utcnow(),
-        'accessed' : datetime.datetime.utcnow(),
-        'modified' : datetime.datetime.utcnow(),
-        'type' : 'file',
-        'parentDir': currentDir,
-        'absolutePath': absolutePath,
-        'cloudProvider': cloudProvider
-        })
+        payload = {
+            'name' : secure_filename(f.filename),
+            'created' : datetime.datetime.utcnow(),
+            'accessed' : datetime.datetime.utcnow(),
+            'modified' : datetime.datetime.utcnow(),
+            'type' : 'file',
+            'parentDir': currentDir,
+            'absolutePath': absolutePath,
+            'cloudProvider': cloudProvider
+        }
 
-        #delete file after upload from server
+        x = userCollection.insert_one(payload)
+
+        # delete file after upload from server
         os.remove(f_path)
 
-        resp = jsonify("Successfully uploaded file")
+        # resp = jsonify("Successfully uploaded file")
+        resp = jsonify({ **payload, '_id': x.inserted_id })
         resp.status_code = 200
         resp.headers.add("Access-Control-Allow-Origin", "*")
         return resp

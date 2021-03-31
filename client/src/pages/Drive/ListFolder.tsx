@@ -138,22 +138,22 @@ const ListFolder = ({ match }: RouteComponentProps<MatchProps>) => {
               }
             />
           </Modal>
-          <label htmlFor='file-input'>
-            <Button
-              variant='contained'
-              color='secondary'
-              startIcon={<CloudUploadIcon />}
-            >
-              Upload File
-            </Button>
-          </label>
-          <input
-            id='file-input'
-            type='file'
-            name='file'
-            onChange={uploadFile}
-            className='dn'
-          />
+
+          <Button
+            variant='contained'
+            color='secondary'
+            startIcon={<CloudUploadIcon />}
+            component='label'
+          >
+            Upload File
+            <input
+              id='file-input'
+              type='file'
+              name='file'
+              onChange={uploadFile}
+              className='dn'
+            />
+          </Button>
         </div>
         <div className='right'>
           <ListFolderItems id={id} />

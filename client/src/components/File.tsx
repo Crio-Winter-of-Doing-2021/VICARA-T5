@@ -7,7 +7,11 @@ interface IProps {
 }
 
 const File = ({ file }: IProps) => {
-  return <Card className='ow w4 pa3'>{file.name}</Card>;
+  return (
+    <Card className='ow w4 pa3' style={{ height: '150px' }}>
+      {file.name}
+    </Card>
+  );
 };
 
 export default File;
