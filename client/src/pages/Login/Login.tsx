@@ -4,14 +4,9 @@ import { handleKeyPress } from '../../assets/ts/utilities';
 import { AuthMode } from './LoginPage';
 import { ApiRoot, LOGIN } from '../../assets/ts/api';
 // import { Cookies } from 'react-cookie';
-import { login, saveAuthStateToStorage } from '../../redux/auth/auth.actions';
+import { login } from '../../redux/auth/auth.actions';
 import { useDispatch } from 'react-redux';
-import {
-  loadDriveStateFromStorage,
-  saveDriveStateToStorage,
-  setDriveState,
-} from '../../redux/drive/drive.actions';
-import { defaultDriveState } from '../../redux/drive/drive.types';
+// import { setDriveState } from '../../redux/drive/drive.actions';
 
 const initialState = {
   username: '',
@@ -78,11 +73,10 @@ const Login = ({
         if (res.status === 200) {
           setSubmitSuccess(true);
           dispatch(login({ displayName: username })); // sets isAuthenticated to true
-          saveAuthStateToStorage({
-            displayName: username,
-            isAuthenticated: true,
-          });
-          dispatch(setDriveState(loadDriveStateFromStorage()));
+          // saveAuthStateToStorage({
+          //   displayName: username,
+          //   isAuthenticated: true,
+          // });
         }
         return res.json();
       })
