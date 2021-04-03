@@ -3,11 +3,7 @@ import FolderIcon from '@material-ui/icons/Folder';
 import { Button } from '@material-ui/core';
 import { useHistory } from 'react-router';
 import { IItem } from '../pages/Drive/ListFolderItems';
-import {
-  saveDriveStateToStorage,
-  setDriveState,
-  setSelectedItem,
-} from '../redux/drive/drive.actions';
+import { setDriveState, setSelectedItem } from '../redux/drive/drive.actions';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectDriveState } from '../redux/drive/drive.selectors';
 import { DriveState } from '../redux/drive/drive.types';
@@ -35,6 +31,7 @@ const Folder = ({ folder }: IProps) => {
         className='w4'
         startIcon={<FolderIcon />}
         // onClick={handleFolderClick}
+
         onDoubleClick={() => {
           history.push({ pathname: '/folders/' + folder._id['$oid'] });
           // console.log(absolutePath);
@@ -43,7 +40,7 @@ const Folder = ({ folder }: IProps) => {
             currentDir: folder.name,
           };
           dispatch(setDriveState(newDriveState));
-          saveDriveStateToStorage(newDriveState);
+          // saveDriveStateToStorage(newDriveState);
         }}
       >
         {folder.name}

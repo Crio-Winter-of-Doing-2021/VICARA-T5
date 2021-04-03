@@ -23,6 +23,7 @@ import { selectDisplayName } from '../../redux/auth/auth.selectors';
 import Modal from '../../components/common/Modal/Modal';
 import { TextField } from '@material-ui/core';
 import { handleKeyPress } from '../../assets/ts/utilities';
+import Breadcrumb from '../../components/Breadcrumb/Breadcrumb';
 
 interface MatchProps {
   id?: string;
@@ -43,6 +44,8 @@ const ListFolder = ({ match }: RouteComponentProps<MatchProps>) => {
   //   uploadFile();
   // };
 
+  console.log('id: ', id);
+
   const uploadFile = (event: any) => {
     const file = event.target.files[0];
     console.log(file);
@@ -53,7 +56,6 @@ const ListFolder = ({ match }: RouteComponentProps<MatchProps>) => {
 
     // const location = window.location as any;
     const formData = new FormData();
-    // const { absolutePath, currentDir } = loadDriveStateFromStorage();
     console.log(absolutePath);
     formData.append('file', file);
     formData.append(
@@ -82,7 +84,6 @@ const ListFolder = ({ match }: RouteComponentProps<MatchProps>) => {
 
   const onAddClick = () => {
     const formData = new FormData();
-    // const { absolutePath, currentDir } = loadDriveStateFromStorage();
     formData.append(CURRENT_DIR, currentDir);
     formData.append(ABSOLUTE_PATH, absolutePath);
     formData.append('folderName', newFolderName);
@@ -158,6 +159,7 @@ const ListFolder = ({ match }: RouteComponentProps<MatchProps>) => {
           </Button>
         </div>
         <div className='right'>
+          <Breadcrumb />
           <ListFolderItems id={id || '/root'} />
         </div>
       </div>
