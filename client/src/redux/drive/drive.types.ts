@@ -1,14 +1,26 @@
 import { IItem } from '../../pages/Drive/ListFolderItems';
-import { SET_DRIVE_STATE, SET_SELECTED_ITEM } from '../constants';
+import {
+  ADD_FILE,
+  ADD_FOLDER,
+  SET_DRIVE_CONTENT,
+  SET_DRIVE_STATE,
+  SET_SELECTED_ITEM,
+} from '../constants';
 
 export interface DriveReducer {
   selected: SelectedItem;
   driveState: DriveState;
-  content: {
-    files: IItem[];
-    folders: IItem[];
-  };
+  content: DriveContent;
 }
+
+export interface DriveContent {
+  files: IItem[];
+  folders: IItem[];
+}
+const defaultDriveContent: DriveContent = {
+  files: [],
+  folders: [],
+};
 
 export interface SelectedItem {
   id: string;
@@ -22,27 +34,16 @@ export const defaultSelectedItem: SelectedItem = {
 export interface DriveState {
   currentDir: string;
   absolutePath: string;
-  content: {
-    files: [];
-    folders: [];
-  };
 }
 export const defaultDriveState: DriveState = {
   currentDir: '/root',
   absolutePath: '/root',
-  content: {
-    files: [],
-    folders: [],
-  },
 };
 
 export const driveReducerDefaultState: DriveReducer = {
   selected: defaultSelectedItem,
   driveState: defaultDriveState,
-  content: {
-    files: [],
-    folders: [],
-  },
+  content: defaultDriveContent,
 };
 
 interface SetSelectedItemAction {
@@ -54,5 +55,22 @@ interface SetDriveStateAction {
   type: typeof SET_DRIVE_STATE;
   driveState: DriveState;
 }
+interface SetDriveContentAction {
+  type: typeof SET_DRIVE_CONTENT;
+  content: DriveContent;
+}
+interface AddDriveFileAction {
+  type: typeof ADD_FILE;
+  file: IItem;
+}
+interface AddDriveFolderAction {
+  type: typeof ADD_FOLDER;
+  folder: IItem;
+}
 
-export type DriveActions = SetSelectedItemAction | SetDriveStateAction;
+export type DriveActions =
+  | SetSelectedItemAction
+  | SetDriveStateAction
+  | SetDriveContentAction
+  | AddDriveFileAction
+  | AddDriveFolderAction;

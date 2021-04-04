@@ -1,14 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { ClickAwayListener } from '@material-ui/core';
+// import { ClickAwayListener } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { ABSOLUTE_PATH, ApiRoot, GET_FOLDER_ITEMS } from '../../assets/ts/api';
 import DottedLineLoader from '../../components/common/Loaders/Loader';
 import File from '../../components/File';
 import Folder from '../../components/Folder';
 import { selectDisplayName } from '../../redux/auth/auth.selectors';
-import { setSelectedItem } from '../../redux/drive/drive.actions';
-import { selectDriveState } from '../../redux/drive/drive.selectors';
-import { defaultSelectedItem } from '../../redux/drive/drive.types';
+import {
+  setDriveContent,
+  // setSelectedItem,
+} from '../../redux/drive/drive.actions';
+import {
+  selectDriveContent,
+  selectDriveState,
+} from '../../redux/drive/drive.selectors';
+// import { defaultSelectedItem } from '../../redux/drive/drive.types';
 
 export interface IItem {
   _id: { $oid: string };
@@ -25,19 +31,21 @@ export interface IItem {
 }
 
 const ListFolderItems = ({ id }: { id: string }) => {
-  const [files, setFiles] = useState<IItem[]>([]);
-  const [folders, setFolders] = useState<IItem[]>([]);
+  // const [files, setFiles] = useState<IItem[]>([]);
+  // const [folders, setFolders] = useState<IItem[]>([]);
   const [errMsg, setErrMsg] = useState('');
   const [err, setErr] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const username = useSelector(selectDisplayName);
   const { absolutePath } = useSelector(selectDriveState);
+  const { files, folders } = useSelector(selectDriveContent);
+  // console.log({ files, folders });
   const dispatch = useDispatch();
 
-  const handleClickAway = () => {
-    dispatch(setSelectedItem(defaultSelectedItem));
-  };
+  // const handleClickAway = () => {
+  //   dispatch(setSelectedItem(defaultSelectedItem));
+  // };
 
   useEffect(() => {
     // const location = window.location as any;
@@ -66,40 +74,46 @@ const ListFolderItems = ({ id }: { id: string }) => {
         }
         const dirs = resJson.filter((x: IItem) => x.type === 'folder');
         const fls = resJson.filter((x: IItem) => x.type === 'file');
-        setFolders(dirs);
-        setFiles(fls);
+        // setFolders(dirs);
+        // setFiles(fls);
+        dispatch(
+          setDriveContent({
+            files: fls,
+            folders: dirs,
+          })
+        );
       })
       .catch((e) => console.log('Error fetching files: ', e))
       .finally(() => {
         setLoading(false);
       });
-  }, [id, username, absolutePath, err]);
+  }, [id, username, absolutePath, err, dispatch]);
   return (
-    <ClickAwayListener onClickAway={handleClickAway}>
-      <div className='flex flex-column'>
-        {!loading ? (
-          !!folders.length ? (
-            <>
-              <div className='flex list-folder-items-container flex-wrap'>
-                {folders.map((x, i) => (
-                  <Folder folder={x} key={i} />
-                ))}
-              </div>
-              <div className='flex list-folder-items-container flex-wrap'>
-                {files.map((x, i) => (
-                  <File file={x} key={i} />
-                ))}
-              </div>
-            </>
-          ) : (
-            <div>No files or directories found. </div>
-          )
+    // <ClickAwayListener onClickAway={handleClickAway}>
+    <div className='flex flex-column'>
+      {!loading ? (
+        !!folders.length ? (
+          <>
+            <div className='flex list-folder-items-container flex-wrap'>
+              {folders.map((x, i) => (
+                <Folder folder={x} key={i} />
+              ))}
+            </div>
+            <div className='flex list-folder-items-container flex-wrap'>
+              {files.map((x, i) => (
+                <File file={x} key={i} />
+              ))}
+            </div>
+          </>
         ) : (
-          <DottedLineLoader />
-        )}
-        {err && <div className='red'>{errMsg}</div>}
-      </div>
-    </ClickAwayListener>
+          <div>No files or directories found. </div>
+        )
+      ) : (
+        <DottedLineLoader />
+      )}
+      {err && <div className='red'>{errMsg}</div>}
+    </div>
+    // </ClickAwayListener>
   );
 };
 

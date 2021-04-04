@@ -5,8 +5,8 @@ const ViewFile = ({ url }: { url: string }) => {
     return (
       <iframe
         // src={`https://docs.google.com/viewerng/viewer?url=${url}&embedded=true`} // for pdf files
-        src={`https://docs.google.com/viewer?url=${url}&embedded=true`}
-        // src={url}
+        // src={`https://docs.google.com/viewer?url=${url}&embedded=true`}
+        src={url}
         style={{ border: '1px solid #666CCC' }}
         // frameborder='0'
         height='100%'

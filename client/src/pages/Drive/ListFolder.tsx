@@ -17,7 +17,7 @@ import {
   UPLOAD,
 } from '../../assets/ts/api';
 import DriveItemMenu from '../../components/DriveItemMenu/DriveItemMenu';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   selectDriveState,
   selectSelectedItem,
@@ -27,6 +27,7 @@ import Modal from '../../components/common/Modal/Modal';
 import { TextField } from '@material-ui/core';
 import { handleKeyPress } from '../../assets/ts/utilities';
 import Breadcrumb from '../../components/Breadcrumb/Breadcrumb';
+import { addFile, addFolder } from '../../redux/drive/drive.actions';
 
 interface MatchProps {
   id?: string;
@@ -44,6 +45,7 @@ const ListFolder = ({ match }: RouteComponentProps<MatchProps>) => {
   const selectedItem = useSelector(selectSelectedItem);
   const username = useSelector(selectDisplayName);
   const { absolutePath, currentDir } = useSelector(selectDriveState);
+  const dispatch = useDispatch();
 
   console.log('id: ', id);
 
@@ -81,7 +83,10 @@ const ListFolder = ({ match }: RouteComponentProps<MatchProps>) => {
         // setSubmitSuccess(true);
         return res.json();
       })
-      .then((res: IItem) => console.log(res))
+      .then((res: IItem) => {
+        console.log(res);
+        dispatch(addFile(res));
+      })
       .catch((err) => console.log(err));
     // .finally(() => setSubmitting(false));
   };
@@ -96,7 +101,14 @@ const ListFolder = ({ match }: RouteComponentProps<MatchProps>) => {
       body: formData,
       headers: { username },
     })
-      .then(() => setOpen(false))
+      .then((res) => {
+        setOpen(false);
+        return res.json();
+      })
+      .then((res: IItem) => {
+        console.log(res);
+        dispatch(addFolder(res));
+      })
       .catch((e) => console.log('Error: ', e));
   };
 
@@ -161,17 +173,19 @@ const ListFolder = ({ match }: RouteComponentProps<MatchProps>) => {
               className='dn'
             />
           </Button>
-          <InputLabel id='provider-select'>Upload to</InputLabel>
-          <Select
-            labelId='provider-select'
-            value={cloudProvider}
-            onChange={(e) => {
-              setCloudProvider(e.target.value as ProviderType);
-            }}
-          >
-            <MenuItem value={provider_azure}>{provider_azure}</MenuItem>
-            <MenuItem value={provider_s3}>{provider_s3}</MenuItem>
-          </Select>
+          <div>
+            <InputLabel id='provider-select'>Upload to</InputLabel>
+            <Select
+              labelId='provider-select'
+              value={cloudProvider}
+              onChange={(e) => {
+                setCloudProvider(e.target.value as ProviderType);
+              }}
+            >
+              <MenuItem value={provider_azure}>{provider_azure}</MenuItem>
+              <MenuItem value={provider_s3}>{provider_s3}</MenuItem>
+            </Select>
+          </div>
         </div>
         <div className='right'>
           <Breadcrumb />

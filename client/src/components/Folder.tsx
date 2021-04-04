@@ -39,10 +39,6 @@ const Folder = ({ folder }: IProps) => {
           const newDriveState: DriveState = {
             absolutePath: absolutePath + '/' + name,
             currentDir: name,
-            content: {
-              files: [],
-              folders: [],
-            },
           };
           dispatch(setDriveState(newDriveState));
           // saveDriveStateToStorage(newDriveState);
