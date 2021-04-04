@@ -33,6 +33,7 @@ interface ModalProps {
   disableDialogEscapeKeyDown?: boolean;
   smallModal?: boolean;
   mediumModal?: boolean;
+  largeModal?: boolean;
 }
 
 const Modal = ({
@@ -50,6 +51,7 @@ const Modal = ({
   disableDialogEscapeKeyDown,
   smallModal,
   mediumModal,
+  largeModal,
 }: ModalProps) => {
   const classes = useModalStyle();
   return (
@@ -65,6 +67,8 @@ const Modal = ({
           ? classes.smallModal
           : mediumModal
           ? classes.mediumModal
+          : largeModal
+          ? classes.largeModal
           : classes.modal,
       }}
       disableEscapeKeyDown={disableDialogEscapeKeyDown}

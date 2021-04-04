@@ -14,6 +14,11 @@ const useModalStyle = makeStyles({
     height: '85vh',
     width: '450px',
   },
+  largeModal: {
+    borderRadius: '6px',
+    height: '85vh',
+    width: '90vw',
+  },
   smallModal: {
     borderRadius: '6px',
     width: '350px',

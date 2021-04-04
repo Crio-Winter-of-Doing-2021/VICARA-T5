@@ -16,7 +16,7 @@ const File = ({ file }: IProps) => {
   return (
     <Card
       className='ow w4 pa3 pointer'
-      style={{ height: '150px' }}
+      style={{ height: '200px' }}
       onClick={handleFileClick}
     >
       {file.name}

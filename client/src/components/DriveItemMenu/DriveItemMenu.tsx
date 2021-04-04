@@ -7,11 +7,12 @@ import {
   Pageview as ViewIcon,
 } from '@material-ui/icons';
 import BootstrapTooltip from '../common/BootstrapTooltip';
-import { ApiRoot, VIEW_FILE } from '../../assets/ts/api';
+import { ApiRoot, DOWNLOAD_FILE, VIEW_FILE } from '../../assets/ts/api';
 import Modal from '../common/Modal/Modal';
 import ViewFile from '../../pages/Drive/ViewFile';
 import { useSelector } from 'react-redux';
 import { selectDisplayName } from '../../redux/auth/auth.selectors';
+import downloadFile from '../../assets/ts/downloadFile';
 
 interface IProps {
   id: string;
@@ -40,9 +41,26 @@ const DriveItemMenu = ({ id, type }: IProps) => {
       })
       .catch((err) => console.log(err));
   };
-  const handleDownload = () => {};
+  const handleDownload = () => {
+    fetch(ApiRoot + DOWNLOAD_FILE, {
+      method: 'GET',
+      credentials: 'include',
+      headers: { username, file_id: id },
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then((res) => {
+        console.log(res);
+        downloadFile(res);
+      })
+      .catch((err) => console.log(err));
+  };
   return (
-    <div className='self-end'>
+    <div
+      className='flex justify-end'
+      style={{ position: 'fixed', marginBottom: '25px', width: '100vw' }}
+    >
       <BootstrapTooltip title='Delete'>
         <IconButton>
           <DeleteIcon />
@@ -69,6 +87,7 @@ const DriveItemMenu = ({ id, type }: IProps) => {
             open={!!viewFileUrl}
             onClose={() => setViewFileUrl('')}
             modalName='view-file-modal'
+            mediumModal
           >
             <ViewFile url={viewFileUrl} />
           </Modal>
