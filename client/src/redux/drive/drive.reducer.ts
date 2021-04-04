@@ -1,6 +1,7 @@
 import {
   ADD_FILE,
   ADD_FOLDER,
+  SET_CLOUD_PROVIDER,
   SET_DRIVE_CONTENT,
   SET_DRIVE_STATE,
   SET_SELECTED_ITEM,
@@ -42,6 +43,14 @@ const driveReducer = (
         content: {
           ...state.content,
           files: [...state.content.files, action.file],
+        },
+      };
+    case SET_CLOUD_PROVIDER:
+      return {
+        ...state,
+        driveState: {
+          ...state.driveState,
+          cloudProvider: action.provider,
         },
       };
     default:

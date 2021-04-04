@@ -27,7 +27,8 @@ const UserProfile = () => {
       .then(() => {
         dispatch(logout());
         // clearAuthStateFromStorage();
-        localStorage.removeItem('persist:root');
+        // localStorage.removeItem('persist:root');
+        localStorage.clear();
       })
       .catch((e) => {
         console.log('Error logging out... ', e);

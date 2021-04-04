@@ -27,7 +27,11 @@ import Modal from '../../components/common/Modal/Modal';
 import { TextField } from '@material-ui/core';
 import { handleKeyPress } from '../../assets/ts/utilities';
 import Breadcrumb from '../../components/Breadcrumb/Breadcrumb';
-import { addFile, addFolder } from '../../redux/drive/drive.actions';
+import {
+  addFile,
+  addFolder,
+  setCloudProvider,
+} from '../../redux/drive/drive.actions';
 
 interface MatchProps {
   id?: string;
@@ -38,13 +42,15 @@ const ListFolder = ({ match }: RouteComponentProps<MatchProps>) => {
   const { id } = match.params; // folder id
   const [open, setOpen] = useState(false);
   const [newFolderName, setNewFolderName] = useState('');
-  const [cloudProvider, setCloudProvider] = useState<ProviderType>(
-    provider_azure
-  );
+  // const [cloudProvider, setCloudProvider] = useState<ProviderType>(
+  //   provider_azure
+  // );
 
   const selectedItem = useSelector(selectSelectedItem);
   const username = useSelector(selectDisplayName);
-  const { absolutePath, currentDir } = useSelector(selectDriveState);
+  const { absolutePath, currentDir, cloudProvider } = useSelector(
+    selectDriveState
+  );
   const dispatch = useDispatch();
 
   console.log('id: ', id);
@@ -179,7 +185,7 @@ const ListFolder = ({ match }: RouteComponentProps<MatchProps>) => {
               labelId='provider-select'
               value={cloudProvider}
               onChange={(e) => {
-                setCloudProvider(e.target.value as ProviderType);
+                dispatch(setCloudProvider(e.target.value as ProviderType));
               }}
             >
               <MenuItem value={provider_azure}>{provider_azure}</MenuItem>

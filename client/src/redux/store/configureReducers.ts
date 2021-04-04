@@ -7,7 +7,7 @@ import coreReducers from './coreReducers';
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['drive', 'auth'], // the reducer that you want to persist
+  whitelist: ['auth'], // the reducer that you want to persist
 };
 
 const createReducer = (asyncReducers = {}) => {

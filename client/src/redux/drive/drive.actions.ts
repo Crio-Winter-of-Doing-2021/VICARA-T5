@@ -2,6 +2,7 @@ import { IItem } from '../../pages/Drive/ListFolderItems';
 import {
   ADD_FILE,
   ADD_FOLDER,
+  SET_CLOUD_PROVIDER,
   SET_DRIVE_CONTENT,
   SET_DRIVE_STATE,
   SET_SELECTED_ITEM,
@@ -11,6 +12,7 @@ import {
   SelectedItem,
   DriveState,
   DriveContent,
+  ProviderType,
 } from './drive.types';
 
 export const setSelectedItem = (selected: SelectedItem): DriveActions => ({
@@ -36,6 +38,11 @@ export const addFile = (file: IItem): DriveActions => ({
 export const addFolder = (folder: IItem): DriveActions => ({
   type: ADD_FOLDER,
   folder,
+});
+
+export const setCloudProvider = (provider: ProviderType): DriveActions => ({
+  type: SET_CLOUD_PROVIDER,
+  provider,
 });
 
 // export const saveDriveStateToStorage = (driveState: DriveState) => {
