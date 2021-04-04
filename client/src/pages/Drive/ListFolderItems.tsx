@@ -74,6 +74,7 @@ const ListFolderItems = ({ id }: { id: string }) => {
         }
         const dirs = resJson.filter((x: IItem) => x.type === 'folder');
         const fls = resJson.filter((x: IItem) => x.type === 'file');
+        // console.log({ dirs, fls });
         // setFolders(dirs);
         // setFiles(fls);
         dispatch(
@@ -92,17 +93,14 @@ const ListFolderItems = ({ id }: { id: string }) => {
     // <ClickAwayListener onClickAway={handleClickAway}>
     <div className='flex flex-column'>
       {!loading ? (
-        !!folders.length ? (
+        !!folders.length || !!files.length ? (
           <>
             <div className='flex list-folder-items-container flex-wrap'>
-              {folders.map((x, i) => (
-                <Folder folder={x} key={i} />
-              ))}
+              {!!folders.length &&
+                folders.map((x, i) => <Folder folder={x} key={i} />)}
             </div>
             <div className='flex list-folder-items-container flex-wrap'>
-              {files.map((x, i) => (
-                <File file={x} key={i} />
-              ))}
+              {!!files.length && files.map((x, i) => <File file={x} key={i} />)}
             </div>
           </>
         ) : (
