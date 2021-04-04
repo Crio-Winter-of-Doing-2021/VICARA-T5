@@ -18,7 +18,9 @@ const Folder = ({ folder }: IProps) => {
 
   const { type, folder_id = '', name } = folder;
 
-  const { absolutePath } = useSelector(selectDriveState);
+  const { absolutePath, absIdPath, cloudProvider } = useSelector(
+    selectDriveState
+  );
 
   const handleFolderClick = () => {
     // console.log('Clicked: ', folder._id);
@@ -37,8 +39,10 @@ const Folder = ({ folder }: IProps) => {
           history.push({ pathname: '/folders/' + folder_id });
           // console.log(absolutePath);
           const newDriveState: DriveState = {
+            cloudProvider,
             absolutePath: absolutePath + '/' + name,
             currentDir: name,
+            absIdPath: absIdPath + '/' + folder_id,
           };
           dispatch(setDriveState(newDriveState));
           // saveDriveStateToStorage(newDriveState);
