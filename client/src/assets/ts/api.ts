@@ -7,7 +7,7 @@ export const LOGOUT = '/logout';
 export const GET_FOLDER_ITEMS = '/getFolderItems';
 export const UPLOAD = '/upload';
 export const ADD_FOLDER = '/addFolder';
-export const DOWNLOAD_FILE = '/download';
+export const DOWNLOAD_FILE = '/getFile';
 
 export const ABSOLUTE_PATH = 'absolutePath';
 export const CURRENT_DIR = 'currentDir';

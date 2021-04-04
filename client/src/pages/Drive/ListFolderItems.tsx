@@ -34,6 +34,7 @@ const ListFolderItems = ({ id }: { id: string }) => {
     setLoading(true);
     let formData = new FormData();
     formData.append(ABSOLUTE_PATH, absolutePath);
+
     fetch(ApiRoot + GET_FOLDER_ITEMS, {
       body: formData,
       method: 'POST',
