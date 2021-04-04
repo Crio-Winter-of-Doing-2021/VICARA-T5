@@ -11,3 +11,7 @@ export const DOWNLOAD_FILE = '/download';
 
 export const ABSOLUTE_PATH = 'absolutePath';
 export const CURRENT_DIR = 'currentDir';
+export const CLOUD_PROVIDER = 'cloudProvider';
+
+export const provider_azure = 'Azure';
+export const provider_s3 = ''; // TODO:
