@@ -16,6 +16,7 @@ export interface IItem {
   type: 'file' | 'folder';
   parentDir: string;
   absolutePath: string;
+  cloudProvider?: string;
 }
 
 const ListFolderItems = ({ id }: { id: string }) => {

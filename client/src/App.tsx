@@ -17,7 +17,9 @@ import {
   FOLDERS,
   FOLDER_ROUTE,
   LOGIN_ROUTE,
+  STARRED_ROUTE,
 } from './routes/routes';
+import StarredItems from './pages/StarredItems/StarredItems';
 
 const FilePreview = lazy(() => import('./components/FilePreview/FilePreview'));
 const ListFolder = lazy(() => import('./pages/Drive/ListFolder'));
@@ -55,6 +57,7 @@ const App = () => {
               <PrivateRoute exact path={FOLDERS} component={ListFolder} />
               <PrivateRoute path={FOLDER_ROUTE} component={ListFolder} />
               <PrivateRoute path={FILE_ROUTE} component={FilePreview} />
+              <PrivateRoute path={STARRED_ROUTE} component={StarredItems} />
               <Route component={NotFound} />
             </Switch>
           </Suspense>

@@ -10,7 +10,9 @@ import {
   ABSOLUTE_PATH,
   ADD_FOLDER,
   ApiRoot,
+  CLOUD_PROVIDER,
   CURRENT_DIR,
+  provider_azure,
   UPLOAD,
 } from '../../assets/ts/api';
 import DriveItemMenu from '../../components/DriveItemMenu/DriveItemMenu';
@@ -66,6 +68,7 @@ const ListFolder = ({ match }: RouteComponentProps<MatchProps>) => {
       //   : '/root'
     );
     formData.append(CURRENT_DIR, currentDir);
+    formData.append(CLOUD_PROVIDER, provider_azure);
 
     const options = {
       method: 'POST',
