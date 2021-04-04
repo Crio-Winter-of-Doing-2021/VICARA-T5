@@ -87,7 +87,7 @@ const DriveItemMenu = ({ id, type }: IProps) => {
             open={!!viewFileUrl}
             onClose={() => setViewFileUrl('')}
             modalName='view-file-modal'
-            mediumModal
+            largeModal
           >
             <ViewFile url={viewFileUrl} />
           </Modal>
