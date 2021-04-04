@@ -1,5 +1,5 @@
-import { ClickAwayListener } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
+import { ClickAwayListener } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { ABSOLUTE_PATH, ApiRoot, GET_FOLDER_ITEMS } from '../../assets/ts/api';
 import DottedLineLoader from '../../components/common/Loaders/Loader';
@@ -14,6 +14,8 @@ export interface IItem {
   _id: { $oid: string };
   name: string;
   created: string;
+  file_id?: string;
+  folder_id?: string;
   accessed: string;
   modified: string;
   type: 'file' | 'folder';

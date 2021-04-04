@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { Button } from '@material-ui/core';
+import { Button, InputLabel, MenuItem, Select } from '@material-ui/core';
 import CreateNewFolderIcon from '@material-ui/icons/CreateNewFolder';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import { RouteComponentProps } from 'react-router';
 
 import './ListFolder.css';
-import ListFolderItems from './ListFolderItems';
+import ListFolderItems, { IItem } from './ListFolderItems';
 import {
   ABSOLUTE_PATH,
   ADD_FOLDER,
@@ -13,6 +13,7 @@ import {
   CLOUD_PROVIDER,
   CURRENT_DIR,
   provider_azure,
+  provider_s3,
   UPLOAD,
 } from '../../assets/ts/api';
 import DriveItemMenu from '../../components/DriveItemMenu/DriveItemMenu';
@@ -31,26 +32,24 @@ interface MatchProps {
   id?: string;
 }
 
+type ProviderType = typeof provider_azure | typeof provider_s3;
 const ListFolder = ({ match }: RouteComponentProps<MatchProps>) => {
   const { id } = match.params; // folder id
   const [open, setOpen] = useState(false);
   const [newFolderName, setNewFolderName] = useState('');
+  const [cloudProvider, setCloudProvider] = useState<ProviderType>(
+    provider_azure
+  );
 
   const selectedItem = useSelector(selectSelectedItem);
   const username = useSelector(selectDisplayName);
   const { absolutePath, currentDir } = useSelector(selectDriveState);
 
-  // const changeHandler = (event: any) => {
-
-  //   // setIsSelected(true);
-  //   uploadFile();
-  // };
-
   console.log('id: ', id);
 
   const uploadFile = (event: any) => {
     const file = event.target.files[0];
-    console.log(file);
+    // console.log(file);
     if (!file) {
       console.log('No file selected');
       return;
@@ -68,7 +67,7 @@ const ListFolder = ({ match }: RouteComponentProps<MatchProps>) => {
       //   : '/root'
     );
     formData.append(CURRENT_DIR, currentDir);
-    formData.append(CLOUD_PROVIDER, provider_azure);
+    formData.append(CLOUD_PROVIDER, cloudProvider);
 
     const options = {
       method: 'POST',
@@ -78,9 +77,11 @@ const ListFolder = ({ match }: RouteComponentProps<MatchProps>) => {
     delete (options.headers as any)['Content-Type'];
 
     fetch(ApiRoot + UPLOAD, options)
-      .then(() => {
+      .then((res) => {
         // setSubmitSuccess(true);
+        return res.json();
       })
+      .then((res: IItem) => console.log(res))
       .catch((err) => console.log(err));
     // .finally(() => setSubmitting(false));
   };
@@ -160,6 +161,17 @@ const ListFolder = ({ match }: RouteComponentProps<MatchProps>) => {
               className='dn'
             />
           </Button>
+          <InputLabel id='provider-select'>Upload to</InputLabel>
+          <Select
+            labelId='provider-select'
+            value={cloudProvider}
+            onChange={(e) => {
+              setCloudProvider(e.target.value as ProviderType);
+            }}
+          >
+            <MenuItem value={provider_azure}>{provider_azure}</MenuItem>
+            <MenuItem value={provider_s3}>{provider_s3}</MenuItem>
+          </Select>
         </div>
         <div className='right'>
           <Breadcrumb />

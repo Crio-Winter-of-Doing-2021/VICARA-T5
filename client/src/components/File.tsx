@@ -11,8 +11,7 @@ interface IProps {
 const File = ({ file }: IProps) => {
   const dispatch = useDispatch();
   const handleFileClick = () => {
-    // console.log('Clicked: ', file._id.$oid);
-    dispatch(setSelectedItem({ type: file.type, id: file._id.$oid }));
+    dispatch(setSelectedItem({ type: file.type, id: file.file_id! }));
   };
   return (
     <Card
