@@ -30,8 +30,7 @@ const Folder = ({ folder }: IProps) => {
         color='primary'
         className='w4'
         startIcon={<FolderIcon />}
-        // onClick={handleFolderClick}
-
+        onClick={handleFolderClick}
         onDoubleClick={() => {
           history.push({ pathname: '/folders/' + folder._id['$oid'] });
           // console.log(absolutePath);

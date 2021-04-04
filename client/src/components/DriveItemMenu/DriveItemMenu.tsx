@@ -1,6 +1,10 @@
-import { IconButton } from '@material-ui/core';
-import { Delete as DeleteIcon, Edit as EditIcon } from '@material-ui/icons';
 import React from 'react';
+import { IconButton } from '@material-ui/core';
+import {
+  Delete as DeleteIcon,
+  Edit as EditIcon,
+  CloudDownload as DownloadIcon,
+} from '@material-ui/icons';
 
 interface IProps {
   id: string;
@@ -8,6 +12,7 @@ interface IProps {
 }
 
 const DriveItemMenu = ({ id, type }: IProps) => {
+  const handleDownloadClick = () => {};
   return (
     <div className='self-end'>
       <IconButton>
@@ -15,6 +20,9 @@ const DriveItemMenu = ({ id, type }: IProps) => {
       </IconButton>
       <IconButton>
         <EditIcon />
+      </IconButton>
+      <IconButton onClick={handleDownloadClick}>
+        <DownloadIcon />
       </IconButton>
     </div>
   );
