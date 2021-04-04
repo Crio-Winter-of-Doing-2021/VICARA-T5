@@ -10,9 +10,9 @@ import { selectDisplayName } from '../../../redux/auth/auth.selectors';
 import CustomMenu from '../Menu/CustomMenu';
 import {
   logout,
-  clearAuthStateFromStorage,
+  // clearAuthStateFromStorage,
 } from '../../../redux/auth/auth.actions';
-import { ApiRoot } from '../../../assets/ts/api';
+import { ApiRoot, LOGOUT } from '../../../assets/ts/api';
 
 const UserProfile = () => {
   const { name } = useSelector(
@@ -23,10 +23,11 @@ const UserProfile = () => {
   const dispatch = useDispatch();
 
   const startLogout = () => {
-    fetch(ApiRoot + '/logout')
+    fetch(ApiRoot + LOGOUT)
       .then(() => {
         dispatch(logout());
-        clearAuthStateFromStorage();
+        // clearAuthStateFromStorage();
+        localStorage.removeItem('persist:root');
       })
       .catch((e) => {
         console.log('Error logging out... ', e);

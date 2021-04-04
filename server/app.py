@@ -137,6 +137,7 @@ def addFolder():
         
         folder_id = request.headers['username'] + '_folder_' + str(uuid.uuid4())
 
+<<<<<<< HEAD
         userCollection.insert_one({'name' : secure_filename(request.form['folderName']),
         'created' : datetime.utcnow(),
         'accessed' : datetime.utcnow(),
@@ -148,6 +149,21 @@ def addFolder():
         })
 
         resp = jsonify("Successfully added folder")
+=======
+        payload = {
+            'name' : secure_filename(request.form['folderName']),
+            'created' : datetime.datetime.utcnow(),
+            'accessed' : datetime.datetime.utcnow(),
+            'modified' : datetime.datetime.utcnow(),
+            'type' : 'folder',
+            'parentDir': currentDir,
+            'absolutePath': absolutePath
+        }
+        x = userCollection.insert_one(payload)
+
+        # resp = jsonify("Successfully added folder")
+        resp = jsonify({**payload, '_id': x.inserted_id})
+>>>>>>> 6909b80998a93a323f9248d4afc2a33e75be1e68
         resp.status_code = 200
         resp.headers.add("Access-Control-Allow-Origin", "*")
         return resp
@@ -205,6 +221,7 @@ def upload():
         else:
             absolutePath = '/root'
 
+<<<<<<< HEAD
         userCollection.insert_one({'name' : secure_filename(f.filename),
         'file_id' : file_id,
         'created' : datetime.utcnow(),
@@ -217,9 +234,26 @@ def upload():
         })
 
         #delete file after upload from server
+=======
+        payload = {
+            'name' : secure_filename(f.filename),
+            'created' : datetime.datetime.utcnow(),
+            'accessed' : datetime.datetime.utcnow(),
+            'modified' : datetime.datetime.utcnow(),
+            'type' : 'file',
+            'parentDir': currentDir,
+            'absolutePath': absolutePath,
+            'cloudProvider': cloudProvider
+        }
+
+        x = userCollection.insert_one(payload)
+
+        # delete file after upload from server
+>>>>>>> 6909b80998a93a323f9248d4afc2a33e75be1e68
         os.remove(f_path)
 
-        resp = jsonify("Successfully uploaded file")
+        # resp = jsonify("Successfully uploaded file")
+        resp = jsonify({ **payload, '_id': x.inserted_id })
         resp.status_code = 200
         resp.headers.add("Access-Control-Allow-Origin", "*")
         return resp

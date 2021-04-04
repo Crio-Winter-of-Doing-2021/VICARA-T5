@@ -2,14 +2,11 @@ import React, { useState } from 'react';
 import { Button, TextField } from '@material-ui/core';
 import { handleKeyPress } from '../../assets/ts/utilities';
 import { AuthMode } from './LoginPage';
-import { ApiRoot } from '../../assets/ts/api';
+import { ApiRoot, LOGIN } from '../../assets/ts/api';
 // import { Cookies } from 'react-cookie';
-import { login, saveAuthStateToStorage } from '../../redux/auth/auth.actions';
+import { login } from '../../redux/auth/auth.actions';
 import { useDispatch } from 'react-redux';
-import {
-  defaultDriveState,
-  saveDriveStateToStorage,
-} from '../../redux/drive/drive.actions';
+// import { setDriveState } from '../../redux/drive/drive.actions';
 
 const initialState = {
   username: '',
@@ -63,7 +60,7 @@ const Login = ({
     formData.append('username', username);
     formData.append('password', password);
 
-    fetch(ApiRoot + '/login', {
+    fetch(ApiRoot + LOGIN, {
       method: 'POST',
       body: formData,
       // credentials: 'include',
@@ -76,11 +73,10 @@ const Login = ({
         if (res.status === 200) {
           setSubmitSuccess(true);
           dispatch(login({ displayName: username })); // sets isAuthenticated to true
-          saveAuthStateToStorage({
-            displayName: username,
-            isAuthenticated: true,
-          });
-          saveDriveStateToStorage(defaultDriveState);
+          // saveAuthStateToStorage({
+          //   displayName: username,
+          //   isAuthenticated: true,
+          // });
         }
         return res.json();
       })

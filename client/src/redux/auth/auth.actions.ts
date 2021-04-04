@@ -1,5 +1,5 @@
 import { LOGIN, LOGOUT, SET_IS_AUTHENTICATED } from '../constants';
-import { AuthActions, AuthReducer, defaultAuthState } from './auth.types';
+import { AuthActions, AuthReducer } from './auth.types';
 
 export const login = (user: Partial<AuthReducer>): AuthActions => ({
   type: LOGIN,
@@ -15,15 +15,15 @@ export const setIsAuthenticated = (isAuthenticated: boolean): AuthActions => ({
   isAuthenticated,
 });
 
-export const saveAuthStateToStorage = (authState: Partial<AuthReducer>) => {
-  localStorage.setItem('authState', JSON.stringify(authState));
-};
+// export const saveAuthStateToStorage = (authState: Partial<AuthReducer>) => {
+//   localStorage.setItem('authState', JSON.stringify(authState));
+// };
 
-export const loadAuthStateFromStorage = (): AuthReducer => {
-  const authStateJson = localStorage.getItem('authState');
-  return !!authStateJson ? JSON.parse(authStateJson) : defaultAuthState;
-};
+// export const loadAuthStateFromStorage = (): AuthReducer => {
+//   const authStateJson = localStorage.getItem('authState');
+//   return !!authStateJson ? JSON.parse(authStateJson) : defaultAuthState;
+// };
 
-export const clearAuthStateFromStorage = () => {
-  localStorage.removeItem('authState');
-};
+// export const clearAuthStateFromStorage = () => {
+//   localStorage.removeItem('authState');
+// };
