@@ -7,7 +7,7 @@ import {
   Pageview as ViewIcon,
 } from '@material-ui/icons';
 import BootstrapTooltip from '../common/BootstrapTooltip';
-import { ApiRoot, DOWNLOAD_FILE } from '../../assets/ts/api';
+import { ApiRoot, VIEW_FILE } from '../../assets/ts/api';
 import Modal from '../common/Modal/Modal';
 import ViewFile from '../../pages/Drive/ViewFile';
 import { useSelector } from 'react-redux';
@@ -26,7 +26,7 @@ const DriveItemMenu = ({ id, type }: IProps) => {
     // const id = 'alpha_file_a047d7ff-54b9-4db2-b002-1920a5687a1b.png';
     // const username = 'alpha';
 
-    fetch(ApiRoot + DOWNLOAD_FILE, {
+    fetch(ApiRoot + VIEW_FILE, {
       method: 'GET',
       credentials: 'include',
       headers: { username, file_id: id },

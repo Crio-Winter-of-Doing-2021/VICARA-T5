@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { ApiRoot, DOWNLOAD_FILE } from '../../assets/ts/api';
+import { ApiRoot, STARRED_FILES } from '../../assets/ts/api';
 import DottedLineLoader from '../../components/common/Loaders/Loader';
 import File from '../../components/File';
 import { selectDisplayName } from '../../redux/auth/auth.selectors';
@@ -17,7 +17,7 @@ const StarredItems = () => {
     // const location = window.location as any;
     setLoading(true);
     let formData = new FormData();
-    fetch(ApiRoot + DOWNLOAD_FILE, {
+    fetch(ApiRoot + STARRED_FILES, {
       body: formData,
       method: 'POST',
       credentials: 'include',
