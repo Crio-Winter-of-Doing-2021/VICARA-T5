@@ -1,4 +1,4 @@
-import { SET_SELECTED_ITEM } from '../constants';
+import { SET_DRIVE_STATE, SET_SELECTED_ITEM } from '../constants';
 import {
   DriveActions,
   DriveReducer,
@@ -14,6 +14,11 @@ const driveReducer = (
       return {
         ...state,
         selected: action.selected,
+      };
+    case SET_DRIVE_STATE:
+      return {
+        ...state,
+        driveState: action.driveState,
       };
     default:
       return state;

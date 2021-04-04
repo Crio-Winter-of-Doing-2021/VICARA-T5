@@ -1,23 +1,32 @@
 import React, { useState } from 'react';
 import { Button } from '@material-ui/core';
 import CreateNewFolderIcon from '@material-ui/icons/CreateNewFolder';
-// import CloudUploadIcon from '@material-ui/icons/CloudUpload';
+import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import { RouteComponentProps } from 'react-router';
 
 import './ListFolder.css';
 import ListFolderItems from './ListFolderItems';
-import { ApiRoot } from '../../assets/ts/api';
+import {
+  ABSOLUTE_PATH,
+  ADD_FOLDER,
+  ApiRoot,
+  CURRENT_DIR,
+  UPLOAD,
+} from '../../assets/ts/api';
 import DriveItemMenu from '../../components/DriveItemMenu/DriveItemMenu';
 import { useSelector } from 'react-redux';
-import { selectSelectedItem } from '../../redux/drive/drive.selectors';
+import {
+  selectDriveState,
+  selectSelectedItem,
+} from '../../redux/drive/drive.selectors';
 import { selectDisplayName } from '../../redux/auth/auth.selectors';
 import Modal from '../../components/common/Modal/Modal';
 import { TextField } from '@material-ui/core';
 import { handleKeyPress } from '../../assets/ts/utilities';
-import { loadDriveStateFromStorage } from '../../redux/drive/drive.actions';
+import Breadcrumb from '../../components/Breadcrumb/Breadcrumb';
 
 interface MatchProps {
-  id: string;
+  id?: string;
 }
 
 const ListFolder = ({ match }: RouteComponentProps<MatchProps>) => {
@@ -26,14 +35,16 @@ const ListFolder = ({ match }: RouteComponentProps<MatchProps>) => {
   const [newFolderName, setNewFolderName] = useState('');
 
   const selectedItem = useSelector(selectSelectedItem);
-
   const username = useSelector(selectDisplayName);
+  const { absolutePath, currentDir } = useSelector(selectDriveState);
 
   // const changeHandler = (event: any) => {
 
   //   // setIsSelected(true);
   //   uploadFile();
   // };
+
+  console.log('id: ', id);
 
   const uploadFile = (event: any) => {
     const file = event.target.files[0];
@@ -45,17 +56,16 @@ const ListFolder = ({ match }: RouteComponentProps<MatchProps>) => {
 
     // const location = window.location as any;
     const formData = new FormData();
-    const { absolutePath, currentDir } = loadDriveStateFromStorage();
     console.log(absolutePath);
     formData.append('file', file);
     formData.append(
-      'absolutePath',
+      ABSOLUTE_PATH,
       absolutePath
       // location.hasOwnProperty('state')
-      //   ? location.state['absolutePath'] || '/root'
+      //   ? location.state[ABSOLUTE_PATH] || '/root'
       //   : '/root'
     );
-    formData.append('currentDir', currentDir);
+    formData.append(CURRENT_DIR, currentDir);
 
     const options = {
       method: 'POST',
@@ -64,7 +74,7 @@ const ListFolder = ({ match }: RouteComponentProps<MatchProps>) => {
     };
     delete (options.headers as any)['Content-Type'];
 
-    fetch(ApiRoot + '/upload', options)
+    fetch(ApiRoot + UPLOAD, options)
       .then(() => {
         // setSubmitSuccess(true);
       })
@@ -74,11 +84,10 @@ const ListFolder = ({ match }: RouteComponentProps<MatchProps>) => {
 
   const onAddClick = () => {
     const formData = new FormData();
-    const { absolutePath, currentDir } = loadDriveStateFromStorage();
-    formData.append('currentDir', currentDir);
-    formData.append('absolutePath', absolutePath);
+    formData.append(CURRENT_DIR, currentDir);
+    formData.append(ABSOLUTE_PATH, absolutePath);
     formData.append('folderName', newFolderName);
-    fetch(ApiRoot + '/addFolder', {
+    fetch(ApiRoot + ADD_FOLDER, {
       method: 'POST',
       body: formData,
       headers: { username },
@@ -94,7 +103,7 @@ const ListFolder = ({ match }: RouteComponentProps<MatchProps>) => {
         <DriveItemMenu id={selectedItem.id} type={selectedItem.type} />
       )}
       <div className='flex'>
-        <div className='left'>
+        <div className='left items-center'>
           <Button
             variant='contained'
             color='primary'
@@ -132,17 +141,26 @@ const ListFolder = ({ match }: RouteComponentProps<MatchProps>) => {
               }
             />
           </Modal>
-          {/* <Button
+
+          <Button
             variant='contained'
             color='secondary'
             startIcon={<CloudUploadIcon />}
+            component='label'
           >
             Upload File
-          </Button> */}
-          <input type='file' name='file' onChange={uploadFile} />
+            <input
+              id='file-input'
+              type='file'
+              name='file'
+              onChange={uploadFile}
+              className='dn'
+            />
+          </Button>
         </div>
         <div className='right'>
-          <ListFolderItems id={id} />
+          <Breadcrumb />
+          <ListFolderItems id={id || '/root'} />
         </div>
       </div>
     </div>

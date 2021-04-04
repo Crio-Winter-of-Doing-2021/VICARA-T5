@@ -8,3 +8,4 @@ export const SET_IS_AUTHENTICATED = 'SET_IS_AUTHENTICATED';
 
 // drive
 export const SET_SELECTED_ITEM = 'SET_SELECTED_ITEM';
+export const SET_DRIVE_STATE = 'SET_DRIVE_STATE';

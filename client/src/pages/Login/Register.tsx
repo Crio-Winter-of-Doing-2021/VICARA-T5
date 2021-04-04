@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button, TextField } from '@material-ui/core';
 import { handleKeyPress } from '../../assets/ts/utilities';
 import { AuthMode } from './LoginPage';
-import { ApiRoot } from '../../assets/ts/api';
+import { ApiRoot, SIGNUP } from '../../assets/ts/api';
 
 const initialState = {
   email: '',
@@ -53,7 +53,7 @@ const Register = ({
     formData.append('email', state.email);
     formData.append('password', state.password);
 
-    fetch(ApiRoot + '/signup', {
+    fetch(ApiRoot + SIGNUP, {
       method: 'POST',
       body: formData,
     })
