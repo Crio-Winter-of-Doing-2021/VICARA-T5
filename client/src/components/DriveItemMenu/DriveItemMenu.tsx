@@ -1,6 +1,18 @@
+import React, { useState } from 'react';
 import { IconButton } from '@material-ui/core';
-import { Delete as DeleteIcon, Edit as EditIcon } from '@material-ui/icons';
-import React from 'react';
+import {
+  Delete as DeleteIcon,
+  Edit as EditIcon,
+  CloudDownload as DownloadIcon,
+  Pageview as ViewIcon,
+} from '@material-ui/icons';
+import BootstrapTooltip from '../common/BootstrapTooltip';
+import { ApiRoot, DOWNLOAD_FILE, VIEW_FILE } from '../../assets/ts/api';
+import Modal from '../common/Modal/Modal';
+import ViewFile from '../../pages/Drive/ViewFile';
+import { useSelector } from 'react-redux';
+import { selectDisplayName } from '../../redux/auth/auth.selectors';
+import downloadFile from '../../assets/ts/downloadFile';
 
 interface IProps {
   id: string;
@@ -8,14 +20,79 @@ interface IProps {
 }
 
 const DriveItemMenu = ({ id, type }: IProps) => {
+  // console.log({ id, type });
+  const [viewFileUrl, setViewFileUrl] = useState('');
+  const username = useSelector(selectDisplayName);
+  const handleView = () => {
+    // const id = 'alpha_file_a047d7ff-54b9-4db2-b002-1920a5687a1b.png';
+    // const username = 'alpha';
+
+    fetch(ApiRoot + VIEW_FILE, {
+      method: 'GET',
+      credentials: 'include',
+      headers: { username, file_id: id },
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then((res) => {
+        console.log(res);
+        setViewFileUrl(res);
+      })
+      .catch((err) => console.log(err));
+  };
+  const handleDownload = () => {
+    fetch(ApiRoot + DOWNLOAD_FILE, {
+      method: 'GET',
+      credentials: 'include',
+      headers: { username, file_id: id },
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then((res) => {
+        console.log(res);
+        downloadFile(res);
+      })
+      .catch((err) => console.log(err));
+  };
   return (
-    <div className='self-end'>
-      <IconButton>
-        <DeleteIcon />
-      </IconButton>
-      <IconButton>
-        <EditIcon />
-      </IconButton>
+    <div
+      className='flex justify-end'
+      style={{ position: 'fixed', marginBottom: '25px', width: '100vw' }}
+    >
+      <BootstrapTooltip title='Delete'>
+        <IconButton>
+          <DeleteIcon />
+        </IconButton>
+      </BootstrapTooltip>
+      <BootstrapTooltip title='Edit'>
+        <IconButton>
+          <EditIcon />
+        </IconButton>
+      </BootstrapTooltip>
+      {type === 'file' && (
+        <>
+          <BootstrapTooltip title='Download'>
+            <IconButton onClick={handleDownload}>
+              <DownloadIcon />
+            </IconButton>
+          </BootstrapTooltip>
+          <BootstrapTooltip title='View'>
+            <IconButton onClick={handleView}>
+              <ViewIcon />
+            </IconButton>
+          </BootstrapTooltip>
+          <Modal
+            open={!!viewFileUrl}
+            onClose={() => setViewFileUrl('')}
+            modalName='view-file-modal'
+            largeModal
+          >
+            <ViewFile url={viewFileUrl} />
+          </Modal>
+        </>
+      )}
     </div>
   );
 };

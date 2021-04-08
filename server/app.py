@@ -215,7 +215,6 @@ def upload():
         else:
             absolutePath = '/root'
 
-
         payload = {
             'name' : secure_filename(f.filename),
             'file_id' : file_id,
