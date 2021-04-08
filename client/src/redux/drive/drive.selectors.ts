@@ -12,3 +12,8 @@ export const selectDriveState = createSelector(
   [selectDrive],
   (drive) => drive.driveState
 );
+
+export const selectDriveContent = createSelector(
+  [selectDrive],
+  (drive) => drive.content
+);

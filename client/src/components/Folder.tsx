@@ -16,11 +16,15 @@ const Folder = ({ folder }: IProps) => {
   const history = useHistory();
   const dispatch = useDispatch();
 
-  const { absolutePath } = useSelector(selectDriveState);
+  const { type, folder_id = '', name } = folder;
+
+  const { absolutePath, absIdPath, cloudProvider } = useSelector(
+    selectDriveState
+  );
 
   const handleFolderClick = () => {
     // console.log('Clicked: ', folder._id);
-    dispatch(setSelectedItem({ type: folder.type, id: folder._id.$oid }));
+    dispatch(setSelectedItem({ type, id: folder_id }));
   };
 
   return (
@@ -30,20 +34,21 @@ const Folder = ({ folder }: IProps) => {
         color='primary'
         className='w4'
         startIcon={<FolderIcon />}
-        // onClick={handleFolderClick}
-
+        onClick={handleFolderClick}
         onDoubleClick={() => {
-          history.push({ pathname: '/folders/' + folder._id['$oid'] });
+          history.push({ pathname: '/folders/' + folder_id });
           // console.log(absolutePath);
           const newDriveState: DriveState = {
-            absolutePath: absolutePath + '/' + folder.name,
-            currentDir: folder.name,
+            cloudProvider,
+            absolutePath: absolutePath + '/' + name,
+            currentDir: name,
+            absIdPath: absIdPath + '/' + folder_id,
           };
           dispatch(setDriveState(newDriveState));
           // saveDriveStateToStorage(newDriveState);
         }}
       >
-        {folder.name}
+        {name}
       </Button>
     </div>
   );
