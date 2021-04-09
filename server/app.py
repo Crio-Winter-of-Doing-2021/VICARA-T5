@@ -136,14 +136,15 @@ def addFolder():
         else:
             absolutePath = '/root'
         
-        folder_id = request.headers['username'] + '_folder_' + str(uuid.uuid4())
+        artefact_id = request.headers['username'] + '_folder_' + str(uuid.uuid4())
 
         payload = {
             'name' : secure_filename(request.form['folderName']),
             'created' : datetime.utcnow(),
-            'folder_id': folder_id,
+            'artefactID': artefact_id,
             'accessed' : datetime.utcnow(),
             'modified' : datetime.utcnow(),
+            'starred' : False,
             'type' : 'folder',
             'parentDir': currentDir,
             'absolutePath': absolutePath
@@ -170,14 +171,14 @@ def upload():
         f.save(f_path)
         file_ext = os.path.splitext(secure_filename(f.filename))[1]
 
-        file_id = request.headers['username'] + '_file_' + str(uuid.uuid4()) + file_ext
+        artefact_id = request.headers['username'] + '_file_' + str(uuid.uuid4()) + file_ext
         
-        print(file_id)
+        print(artefact_id)
 
         users = mongo.users.info
         userData = users.find_one({'username': request.headers['username']})
 
-        file_mime_type, _ = mimetypes.guess_type(file_id)
+        file_mime_type, _ = mimetypes.guess_type(artefact_id)
 
         if 'cloudProvider' in request.form:
             cloudProvider = request.form['cloudProvider']
@@ -188,7 +189,7 @@ def upload():
             #uploading to azure storage
             my_content_settings = ContentSettings(content_type=file_mime_type, content_disposition= 'inline')
 
-            blob_client = blob_service_client.get_blob_client(container=userData['container'], blob=file_id)
+            blob_client = blob_service_client.get_blob_client(container=userData['container'], blob=artefact_id)
             with open(f_path, "rb") as data:
                 blob_client.upload_blob(data, content_settings=my_content_settings)
 
@@ -198,7 +199,7 @@ def upload():
             print(userData['container'])
             print(file_mime_type)
             #s3_resource.Bucket(aws_bucket_name).upload_file(f_path, userData['container']+'/'+file_id)
-            s3_resource.Bucket(aws_bucket_name).upload_file(f_path, userData['container']+'/'+file_id, ExtraArgs={'ContentType': file_mime_type, 'ContentDisposition' : 'inline' })
+            s3_resource.Bucket(aws_bucket_name).upload_file(f_path, userData['container']+'/'+artefact_id, ExtraArgs={'ContentType': file_mime_type, 'ContentDisposition' : 'inline' })
         
         #TODO: Add exception handling for cases such as blob already exsiting 
         
@@ -215,13 +216,15 @@ def upload():
         else:
             absolutePath = '/root'
 
+
         payload = {
             'name' : secure_filename(f.filename),
-            'file_id' : file_id,
+            'artefactID' : artefact_id,
             'created' : datetime.utcnow(),
             'accessed' : datetime.utcnow(),
             'modified' : datetime.utcnow(),
             'type' : 'file',
+            'starred': False,
             'parentDir': currentDir,
             'absolutePath': absolutePath,
             'cloudProvider': cloudProvider
@@ -233,7 +236,7 @@ def upload():
         os.remove(f_path)
 
         # resp = jsonify("Successfully uploaded file")
-        resp = jsonify({ **payload, '_id': file_id })
+        resp = jsonify({ **payload, '_id': artefact_id })
         resp.status_code = 200
         resp.headers.add("Access-Control-Allow-Origin", "*")
         return resp
@@ -272,9 +275,9 @@ def getFile():
 
         #TODO: check if blob is a part of users blobs
         #blob = BlobClient.from_connection_string(conn_str=azure_connection_string,container_name=session['username'] , blob_name=request.form['fileName'])
-        print('awsdddddddddddd')
-        fileData = userCollection.find_one({'file_id': request.headers['file_id']})
-        fileId = request.headers['file_id']
+
+        fileData = userCollection.find_one({'artefactID': request.headers['artefactID']})
+        artefactID = request.headers['artefactID']
         cloudProvider = fileData['cloudProvider']
         fileName = fileData['name']
 
@@ -287,20 +290,20 @@ def getFile():
             print('a1')
             sas_blob = generate_blob_sas(account_name='vicarastorage', 
                                     container_name=userData['container'],
-                                    blob_name=fileId,
+                                    blob_name=artefactID,
                                     account_key='pDdAKH74ZV4HbXaWKcYXNS1OXR6rJ3fvSD7T//dQIbYyfLvhS0BZdVNy0sllTFyl1zsdvf0b7v6OgP5Y6NuOCg==',
                                     permission=BlobSasPermissions(read=True),
                                     expiry=datetime.utcnow() + timedelta(minutes=30))
             #blob.generate_blob_shared_access_signature(container_name=session['username'],blob_name=request.form['fileName'], permission = READ,expiry = datetime.utcnow() + timedelta(minutes=30))
             #block_blob_service = BlockBlobService(conn_str= azure_connection_string)
-            url = 'https://'+'vicarastorage'+'.blob.core.windows.net/'+userData['container']+'/'+fileId+'?'+sas_blob
+            url = 'https://'+'vicarastorage'+'.blob.core.windows.net/'+userData['container']+'/'+artefactID+'?'+sas_blob
             print(url)
             resp = jsonify(url)
             resp.status_code = 200
             resp.headers.add("Access-Control-Allow-Origin", "*")
             return resp
         else:
-            file_full_id = userData['container'] + '/' + fileId
+            file_full_id = userData['container'] + '/' + artefactID
             url = s3_client.generate_presigned_url(ClientMethod='get_object',
                                      Params={'Bucket': aws_bucket_name, 'Key': file_full_id}, ExpiresIn=3600)
             resp = jsonify(url)
@@ -323,8 +326,8 @@ def getFileLink():
         #TODO: check if blob is a part of users blobs
         #blob = BlobClient.from_connection_string(conn_str=azure_connection_string,container_name=session['username'] , blob_name=request.form['fileName'])
 
-        fileData = userCollection.find_one({'file_id': request.headers['file_id']})
-        fileId = request.headers['file_id']
+        fileData = userCollection.find_one({'artefactID': request.headers['artefactID']})
+        artefactID = request.headers['artefactID']
         cloudProvider = fileData['cloudProvider']
         fileName = fileData['name']
 
@@ -334,24 +337,23 @@ def getFileLink():
         if cloudProvider == 'Azure':
             #TODO: try implementing a block blob service
             print(userData['container'])
-            print("this is 2")
             sas_blob = generate_blob_sas(account_name='vicarastorage', 
                                     container_name=userData['container'],
-                                    blob_name=fileId,
+                                    blob_name=artefactID,
                                     account_key='pDdAKH74ZV4HbXaWKcYXNS1OXR6rJ3fvSD7T//dQIbYyfLvhS0BZdVNy0sllTFyl1zsdvf0b7v6OgP5Y6NuOCg==',
                                     permission=BlobSasPermissions(read=True),
                                     expiry=datetime.utcnow() + timedelta(minutes=30))
             #blob.generate_blob_shared_access_signature(container_name=session['username'],blob_name=request.form['fileName'], permission = READ,expiry = datetime.utcnow() + timedelta(minutes=30))
             #block_blob_service = BlockBlobService(conn_str= azure_connection_string)
-            url = 'https://'+'vicarastorage'+'.blob.core.windows.net/'+userData['container']+'/'+fileId+'?'+sas_blob
+            url = 'https://'+'vicarastorage'+'.blob.core.windows.net/'+userData['container']+'/'+artefactID+'?'+sas_blob
             print(url)
             resp = jsonify(url)
             resp.status_code = 200
             resp.headers.add("Access-Control-Allow-Origin", "*")
             return resp
         else:
-            file_full_id = userData['container'] + '/' + fileId
-            file_mime_type, _ = mimetypes.guess_type(fileId)
+            file_full_id = userData['container'] + '/' + artefactID
+            file_mime_type, _ = mimetypes.guess_type(artefactID)
             url = s3_client.generate_presigned_url(ClientMethod='get_object',
                                      Params={'Bucket': aws_bucket_name, 'Key': file_full_id, 'ResponseContentType': file_mime_type}, ExpiresIn=3600)
             resp = jsonify(url)
@@ -370,7 +372,7 @@ def renameFile():
     if 'username' in request.headers:
         #adding file metadata to mongoDB as part of users collection
         userCollection = mongo.drive[request.headers['username']]
-        userCollection.update_one({'file_id': request.form['fileID']},{ "$set": { 'name': request.form['newName'] } })
+        userCollection.update_one({'artefactID': request.form['artefactID']},{ "$set": { 'name': request.form['newName'], 'modified' : datetime.utcnow() } })
 
         resp = jsonify('file renamed successfully')
         resp.status_code = 200
@@ -389,7 +391,7 @@ def deleteFile():
     if 'username' in request.headers: 
         #adding file metadata to mongoDB as part of users collection
         userCollection = mongo.drive[request.headers['username']]
-        userCollection.delete_one({'file_id': request.form['fileID']})
+        userCollection.delete_one({'artefactID': request.form['artefactID']})
         resp = jsonify('file deleted successfully')
         resp.status_code = 200
         resp.headers.add("Access-Control-Allow-Origin", "*")
@@ -468,7 +470,40 @@ def deleteFile():
     resp.headers.add("Access-Control-Allow-Origin", "*")
     return resp
 
-    
+@app.route('/starFile', methods = ['PUT'])
+def starFile():
+    #if user is logged in
+    if 'username' in request.headers:
+        #adding file metadata to mongoDB as part of users collection
+        userCollection = mongo.drive[request.headers['username']]
+        userCollection.update_one({'artefactID': request.form['artefactID']},{ "$set": { 'starred' : (bool)(request.form['starred']), 'modified' : datetime.utcnow() } })
+
+        resp = jsonify('file starred successfully')
+        resp.status_code = 200
+        resp.headers.add("Access-Control-Allow-Origin", "*")
+        return resp
+
+    resp = jsonify('Login to be able to star a file')
+    resp.status_code = 403
+    resp.headers.add("Access-Control-Allow-Origin", "*")
+    return resp
+
+@app.route('/allStars', methods = ['GET'])
+def getStarred():
+    #if user is logged in
+    if 'username' in request.headers:
+        userCollection = mongo.drive[request.headers['username']]
+        listJson = json.loads(dumps(userCollection.find({ "starred": True })))        
+        resp = jsonify(listJson)
+        resp.status_code = 200
+        resp.headers.add("Access-Control-Allow-Origin", "http://localhost:8080")
+        resp.headers.add("Access-Control-Allow-Credentials", "true")
+        return resp
+    resp = jsonify('Login to be able to use EDrive')
+    resp.status_code = 403
+    resp.headers.add("Access-Control-Allow-Origin", "http://localhost:8080")
+    resp.headers.add("Access-Control-Allow-Credentials", "true")
+    return resp
 
 @app.route('/logout', methods = ['GET'])
 def logout():
@@ -477,6 +512,8 @@ def logout():
     resp = jsonify("Successfully logged out")
     resp.headers.add("Access-Control-Allow-Origin", "*")
     return resp
+
+
 
 
 if __name__ == "__main__":
