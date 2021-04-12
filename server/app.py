@@ -249,12 +249,17 @@ def upload():
 @app.route('/getFolderItems', methods = ['POST'])
 def getFolderItems():
     if 'username' in request.headers:
+        if 'artefactID' in request.form:
+            artefactId = request.form['artefactID']
+            searchQuery = {'parentArtefactID': artefactId}
         if 'absolutePath' in request.form:
             absolutePath = request.form['absolutePath']
+            searchQuery = {'absolutePath': absolutePath}
         else:
-            absolutePath = '/root'
+            searchQuery = {'absolutePath': '/root'}
+            # absolutePath = '/root'
         userCollection = mongo.drive[request.headers['username']]
-        listJson = json.loads(dumps(userCollection.find({ "absolutePath": absolutePath })))        
+        listJson = json.loads(dumps(userCollection.find(searchQuery)))        
         resp = jsonify(listJson)
         resp.status_code = 200
         resp.headers.add("Access-Control-Allow-Origin", "http://localhost:8080")
