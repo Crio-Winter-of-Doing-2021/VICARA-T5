@@ -152,7 +152,7 @@ def addFolder():
         x = userCollection.insert_one(payload)
 
         # resp = jsonify("Successfully added folder")
-        resp = jsonify({**payload, '_id': x.inserted_id})
+        resp = jsonify({**payload, '_id': folder_id})
         resp.status_code = 200
         resp.headers.add("Access-Control-Allow-Origin", "*")
         return resp
@@ -236,7 +236,7 @@ def upload():
         os.remove(f_path)
 
         # resp = jsonify("Successfully uploaded file")
-        resp = jsonify({ **payload, '_id': x.inserted_id })
+        resp = jsonify({ **payload, '_id': artefact_id })
         resp.status_code = 200
         resp.headers.add("Access-Control-Allow-Origin", "*")
         return resp
@@ -509,11 +509,11 @@ def getStarred():
 def organizeFile():
     #if user is logged in
     if 'username' in request.headers:
+        userCollection = mongo.drive[request.headers['username']]
         fullPath = request.form['newAbsPath']
         parentDir = fullPath.rsplit('/', 1)[-1] 
         userCollection.update_one({'artefactID': request.form['artefactID']},{ "$set": {'parentDir': parentDir, 'absolutePath': request.form['absolutePath'], 'modified' : datetime.utcnow() } })     
         resp = jsonify('file successfully relocated')
-        resp = jsonify(listJson)
         resp.status_code = 200
         resp.headers.add("Access-Control-Allow-Origin", "http://localhost:8080")
         resp.headers.add("Access-Control-Allow-Credentials", "true")
