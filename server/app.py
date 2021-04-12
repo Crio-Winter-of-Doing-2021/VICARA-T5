@@ -252,7 +252,7 @@ def getFolderItems():
         if 'artefactID' in request.form:
             artefactId = request.form['artefactID']
             searchQuery = {'parentArtefactID': artefactId}
-        if 'absolutePath' in request.form:
+        elif 'absolutePath' in request.form:
             absolutePath = request.form['absolutePath']
             searchQuery = {'absolutePath': absolutePath}
         else:
