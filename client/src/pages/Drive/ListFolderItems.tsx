@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from 'react';
 // import { ClickAwayListener } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
-import { ABSOLUTE_PATH, ApiRoot, GET_FOLDER_ITEMS } from '../../assets/ts/api';
+import {
+  ABSOLUTE_PATH,
+  ApiRoot,
+  ARTEFACT_ID,
+  GET_FOLDER_ITEMS,
+} from '../../assets/ts/api';
 import { convertArrayToObj, isObjEmpty } from '../../assets/ts/utilities';
 import DottedLineLoader from '../../components/common/Loaders/Loader';
 import File from '../../components/File';
 import Folder from '../../components/Folder';
 import { selectDisplayName } from '../../redux/auth/auth.selectors';
 import { setDriveContent } from '../../redux/drive/drive.actions';
-import {
-  selectDriveContent,
-  selectDriveState,
-} from '../../redux/drive/drive.selectors';
+import { selectDriveContent } from '../../redux/drive/drive.selectors';
 import { IItem, IItemWithId } from '../../redux/drive/drive.types';
 
 const ListFolderItems = ({ id }: { id: string }) => {
@@ -20,7 +22,6 @@ const ListFolderItems = ({ id }: { id: string }) => {
   const [loading, setLoading] = useState(false);
 
   const username = useSelector(selectDisplayName);
-  const { absolutePath } = useSelector(selectDriveState);
   const { files, folders } = useSelector(selectDriveContent);
   const dispatch = useDispatch();
 
@@ -32,7 +33,7 @@ const ListFolderItems = ({ id }: { id: string }) => {
     // const location = window.location as any;
     setLoading(true);
     let formData = new FormData();
-    formData.append(ABSOLUTE_PATH, absolutePath);
+    formData.append(ARTEFACT_ID, id);
 
     fetch(ApiRoot + GET_FOLDER_ITEMS, {
       body: formData,
@@ -76,7 +77,7 @@ const ListFolderItems = ({ id }: { id: string }) => {
       .finally(() => {
         setLoading(false);
       });
-  }, [id, username, absolutePath, err, dispatch]);
+  }, [id, username, err, dispatch]);
   return (
     // <ClickAwayListener onClickAway={handleClickAway}>
     <div className='flex flex-column'>
