@@ -152,7 +152,7 @@ def addFolder():
         x = userCollection.insert_one(payload)
 
         # resp = jsonify("Successfully added folder")
-        resp = jsonify({**payload, '_id': folder_id})
+        resp = jsonify({**payload, '_id': x.inserted_id})
         resp.status_code = 200
         resp.headers.add("Access-Control-Allow-Origin", "*")
         return resp
@@ -236,7 +236,7 @@ def upload():
         os.remove(f_path)
 
         # resp = jsonify("Successfully uploaded file")
-        resp = jsonify({ **payload, '_id': artefact_id })
+        resp = jsonify({ **payload, '_id': x.inserted_id })
         resp.status_code = 200
         resp.headers.add("Access-Control-Allow-Origin", "*")
         return resp
