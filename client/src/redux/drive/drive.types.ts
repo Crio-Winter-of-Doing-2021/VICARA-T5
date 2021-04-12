@@ -11,6 +11,10 @@ import {
   SET_DRIVE_STATE,
   SET_SELECTED_ITEM,
   CLEAR_SELECTED_ITEM,
+  PUSH_ABS_ID_PATH,
+  POP_ABS_ID_PATH,
+  SET_ABS_ID_PATH,
+  CLEAR_ABS_ID_PATH,
 } from '../constants';
 
 export type ProviderType = typeof provider_azure | typeof provider_s3;
@@ -125,6 +129,21 @@ interface DeleteDriveFolderAction {
   id: string;
 }
 
+interface PushAbsIdPathAction {
+  type: typeof PUSH_ABS_ID_PATH;
+  id: string;
+}
+interface PopAbsIdPathAction {
+  type: typeof POP_ABS_ID_PATH;
+}
+interface SetAbsIdPathAction {
+  type: typeof SET_ABS_ID_PATH;
+  path: string;
+}
+interface ClearAbsIdPathAction {
+  type: typeof CLEAR_ABS_ID_PATH;
+}
+
 export type DriveActions =
   | SetSelectedItemAction
   | ClearSelectedItemAction
@@ -136,4 +155,8 @@ export type DriveActions =
   | EditDriveFileAction
   | EditDriveFolderAction
   | DeleteDriveFileAction
-  | DeleteDriveFolderAction;
+  | DeleteDriveFolderAction
+  | PushAbsIdPathAction
+  | PopAbsIdPathAction
+  | SetAbsIdPathAction
+  | ClearAbsIdPathAction;
