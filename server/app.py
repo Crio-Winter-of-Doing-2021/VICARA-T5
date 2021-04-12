@@ -505,6 +505,42 @@ def getStarred():
     resp.headers.add("Access-Control-Allow-Credentials", "true")
     return resp
 
+@app.route('/organizeFile', methods = ['PUT'])
+def organizeFile():
+    #if user is logged in
+    if 'username' in request.headers:
+        fullPath = request.form['newAbsPath']
+        parentDir = fullPath.rsplit('/', 1)[-1] 
+        userCollection.update_one({'artefactID': request.form['artefactID']},{ "$set": {'parentDir': parentDir, 'absolutePath': request.form['absolutePath'], 'modified' : datetime.utcnow() } })     
+        resp = jsonify('file successfully relocated')
+        resp = jsonify(listJson)
+        resp.status_code = 200
+        resp.headers.add("Access-Control-Allow-Origin", "http://localhost:8080")
+        resp.headers.add("Access-Control-Allow-Credentials", "true")
+        return resp
+    resp = jsonify('Login to be able to use EDrive')
+    resp.status_code = 403
+    resp.headers.add("Access-Control-Allow-Origin", "http://localhost:8080")
+    resp.headers.add("Access-Control-Allow-Credentials", "true")
+    return resp
+
+@app.route('/getRecent', methods = ['GET'])
+def getRecent():
+    #if user is logged in
+    if 'username' in request.headers:
+        userCollection = mongo.drive[request.headers['username']]
+        listJson = json.loads(dumps(userCollection.find({"type":"file"}).sort('_id',-1).limit(5)))  
+        resp = jsonify(listJson)
+        resp.status_code = 200
+        resp.headers.add("Access-Control-Allow-Origin", "http://localhost:8080")
+        resp.headers.add("Access-Control-Allow-Credentials", "true")
+        return resp
+    resp = jsonify('Login to be able to use EDrive')
+    resp.status_code = 403
+    resp.headers.add("Access-Control-Allow-Origin", "http://localhost:8080")
+    resp.headers.add("Access-Control-Allow-Credentials", "true")
+    return resp
+
 @app.route('/logout', methods = ['GET'])
 def logout():
     #clearing session
