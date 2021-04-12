@@ -9,7 +9,11 @@ export const UPLOAD = '/upload';
 export const ADD_FOLDER = '/addFolder';
 export const DOWNLOAD_FILE = '/getFile';
 export const VIEW_FILE = '/getFileLink';
-export const STARRED_FILES = '/starred';
+export const DELETE_FILE = '/deleteFile';
+export const DELETE_FOLDER = '/deleteFolder';
+export const RENAME_FILE_FOLDER = '/rename';
+export const STAR_FILE = '/starFile';
+export const STARRED_FILES = '/allStars';
 
 export const ABSOLUTE_PATH = 'absolutePath';
 export const CURRENT_DIR = 'currentDir';
