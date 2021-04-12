@@ -5,7 +5,7 @@ import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import { RouteComponentProps } from 'react-router';
 
 import './ListFolder.css';
-import ListFolderItems, { IItem } from './ListFolderItems';
+import ListFolderItems from './ListFolderItems';
 import {
   ABSOLUTE_PATH,
   ADD_FOLDER,
@@ -32,6 +32,7 @@ import {
   addFolder,
   setCloudProvider,
 } from '../../redux/drive/drive.actions';
+import { IItem } from '../../redux/drive/drive.types';
 
 interface MatchProps {
   id?: string;
@@ -77,7 +78,7 @@ const ListFolder = ({ match }: RouteComponentProps<MatchProps>) => {
     formData.append(CURRENT_DIR, currentDir);
     formData.append(CLOUD_PROVIDER, cloudProvider);
 
-    const options = {
+    const options: RequestInit = {
       method: 'POST',
       body: formData,
       headers: { username },
@@ -91,7 +92,7 @@ const ListFolder = ({ match }: RouteComponentProps<MatchProps>) => {
       })
       .then((res: IItem) => {
         console.log(res);
-        dispatch(addFile(res));
+        dispatch(addFile(res.artefactID, res));
       })
       .catch((err) => console.log(err));
     // .finally(() => setSubmitting(false));
@@ -113,14 +114,13 @@ const ListFolder = ({ match }: RouteComponentProps<MatchProps>) => {
       })
       .then((res: IItem) => {
         console.log(res);
-        dispatch(addFolder(res));
+        dispatch(addFolder(res.artefactID, res));
       })
       .catch((e) => console.log('Error: ', e));
   };
 
   return (
     <div className='flex flex-column items-center'>
-      {/* <span>{id}</span> */}
       {selectedItem.id && selectedItem.type && (
         <DriveItemMenu id={selectedItem.id} type={selectedItem.type} />
       )}
@@ -142,14 +142,14 @@ const ListFolder = ({ match }: RouteComponentProps<MatchProps>) => {
             dialogTitle='Create Folder'
             dialogActions={[
               {
-                onBtnClick: onAddClick,
-                btnText: 'Create',
-                btnStyle: { variant: 'contained', color: 'primary' },
-              },
-              {
                 onBtnClick: () => setOpen(false),
                 btnText: 'Cancel',
                 btnStyle: { variant: 'outlined', color: 'primary' },
+              },
+              {
+                onBtnClick: onAddClick,
+                btnText: 'Create',
+                btnStyle: { variant: 'contained', color: 'primary' },
               },
             ]}
           >

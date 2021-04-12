@@ -4,7 +4,7 @@ import { ApiRoot, STARRED_FILES } from '../../assets/ts/api';
 import DottedLineLoader from '../../components/common/Loaders/Loader';
 import File from '../../components/File';
 import { selectDisplayName } from '../../redux/auth/auth.selectors';
-import { IItem } from '../Drive/ListFolderItems';
+import { IItem } from '../../redux/drive/drive.types';
 
 const StarredItems = () => {
   const [files, setFiles] = useState<IItem[]>([]);
@@ -16,14 +16,10 @@ const StarredItems = () => {
   useEffect(() => {
     // const location = window.location as any;
     setLoading(true);
-    let formData = new FormData();
     fetch(ApiRoot + STARRED_FILES, {
-      body: formData,
-      method: 'POST',
+      method: 'GET',
       credentials: 'include',
-      headers: {
-        username,
-      },
+      headers: { username },
     })
       .then((res) => {
         // console.log(res);
@@ -31,10 +27,10 @@ const StarredItems = () => {
         return res.json();
       })
       .then((resJson) => {
-        // console.log('resJson: ', resJson);
+        console.log('resJson: ', resJson);
         // if (err) {
-        //   setErrMsg(resJson);
-        //   return;
+        // setErrMsg(resJson);
+        // return;
         // }
         setFiles(resJson);
       })

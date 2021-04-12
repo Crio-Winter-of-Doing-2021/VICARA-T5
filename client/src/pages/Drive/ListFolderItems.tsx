@@ -2,37 +2,19 @@ import React, { useEffect, useState } from 'react';
 // import { ClickAwayListener } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { ABSOLUTE_PATH, ApiRoot, GET_FOLDER_ITEMS } from '../../assets/ts/api';
+import { convertArrayToObj, isObjEmpty } from '../../assets/ts/utilities';
 import DottedLineLoader from '../../components/common/Loaders/Loader';
 import File from '../../components/File';
 import Folder from '../../components/Folder';
 import { selectDisplayName } from '../../redux/auth/auth.selectors';
-import {
-  setDriveContent,
-  // setSelectedItem,
-} from '../../redux/drive/drive.actions';
+import { setDriveContent } from '../../redux/drive/drive.actions';
 import {
   selectDriveContent,
   selectDriveState,
 } from '../../redux/drive/drive.selectors';
-// import { defaultSelectedItem } from '../../redux/drive/drive.types';
-
-export interface IItem {
-  _id: { $oid: string };
-  name: string;
-  created: string;
-  file_id?: string;
-  folder_id?: string;
-  accessed: string;
-  modified: string;
-  type: 'file' | 'folder';
-  parentDir: string;
-  absolutePath: string;
-  cloudProvider?: string;
-}
+import { IItem, IItemWithId } from '../../redux/drive/drive.types';
 
 const ListFolderItems = ({ id }: { id: string }) => {
-  // const [files, setFiles] = useState<IItem[]>([]);
-  // const [folders, setFolders] = useState<IItem[]>([]);
   const [errMsg, setErrMsg] = useState('');
   const [err, setErr] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -40,11 +22,10 @@ const ListFolderItems = ({ id }: { id: string }) => {
   const username = useSelector(selectDisplayName);
   const { absolutePath } = useSelector(selectDriveState);
   const { files, folders } = useSelector(selectDriveContent);
-  // console.log({ files, folders });
   const dispatch = useDispatch();
 
   // const handleClickAway = () => {
-  //   dispatch(setSelectedItem(defaultSelectedItem));
+  //   dispatch(clearSelectedItem());
   // };
 
   useEffect(() => {
@@ -72,8 +53,15 @@ const ListFolderItems = ({ id }: { id: string }) => {
           setErrMsg(resJson);
           return;
         }
-        const dirs = resJson.filter((x: IItem) => x.type === 'folder');
-        const fls = resJson.filter((x: IItem) => x.type === 'file');
+        const res = resJson as IItem[];
+        const dirs = convertArrayToObj<IItem, IItemWithId>(
+          res.filter((x: IItem) => x.type === 'folder'),
+          'artefactID'
+        );
+        const fls = convertArrayToObj<IItem, IItemWithId>(
+          res.filter((x: IItem) => x.type === 'file'),
+          'artefactID'
+        );
         // console.log({ dirs, fls });
         // setFolders(dirs);
         // setFiles(fls);
@@ -93,14 +81,17 @@ const ListFolderItems = ({ id }: { id: string }) => {
     // <ClickAwayListener onClickAway={handleClickAway}>
     <div className='flex flex-column'>
       {!loading ? (
-        !!folders.length || !!files.length ? (
+        !isObjEmpty(folders) || !isObjEmpty(files) ? (
           <>
             <div className='flex list-folder-items-container flex-wrap'>
-              {!!folders.length &&
-                folders.map((x, i) => <Folder folder={x} key={i} />)}
+              {!isObjEmpty(folders) &&
+                Object.values(folders).map((x, i) => (
+                  <Folder folder={x} key={i} />
+                ))}
             </div>
             <div className='flex list-folder-items-container flex-wrap'>
-              {!!files.length && files.map((x, i) => <File file={x} key={i} />)}
+              {!isObjEmpty(files) &&
+                Object.values(files).map((x, i) => <File file={x} key={i} />)}
             </div>
           </>
         ) : (

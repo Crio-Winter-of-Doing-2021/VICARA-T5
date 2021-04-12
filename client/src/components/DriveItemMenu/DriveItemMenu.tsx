@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { IconButton } from '@material-ui/core';
+import React, { useState, useEffect } from 'react';
+import { IconButton, TextField } from '@material-ui/core';
 import {
   Delete as DeleteIcon,
   Edit as EditIcon,
@@ -7,12 +7,29 @@ import {
   Pageview as ViewIcon,
 } from '@material-ui/icons';
 import BootstrapTooltip from '../common/BootstrapTooltip';
-import { ApiRoot, DOWNLOAD_FILE, VIEW_FILE } from '../../assets/ts/api';
+import {
+  ApiRoot,
+  DELETE_FILE,
+  DELETE_FOLDER,
+  DOWNLOAD_FILE,
+  RENAME_FILE_FOLDER,
+  VIEW_FILE,
+} from '../../assets/ts/api';
 import Modal from '../common/Modal/Modal';
 import ViewFile from '../../pages/Drive/ViewFile';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { selectDisplayName } from '../../redux/auth/auth.selectors';
 import downloadFile from '../../assets/ts/downloadFile';
+import {
+  clearSelectedItem,
+  deleteFile,
+  deleteFolder,
+  editFile,
+  editFolder,
+} from '../../redux/drive/drive.actions';
+import { handleKeyPress } from '../../assets/ts/utilities';
+import { IItem } from '../../redux/drive/drive.types';
+import { selectSelectedItemName } from '../../redux/drive/drive.selectors';
 
 interface IProps {
   id: string;
@@ -22,15 +39,21 @@ interface IProps {
 const DriveItemMenu = ({ id, type }: IProps) => {
   // console.log({ id, type });
   const [viewFileUrl, setViewFileUrl] = useState('');
+  const [editOpen, setEditOpen] = useState(false);
   const username = useSelector(selectDisplayName);
-  const handleView = () => {
-    // const id = 'alpha_file_a047d7ff-54b9-4db2-b002-1920a5687a1b.png';
-    // const username = 'alpha';
+  const name = useSelector((state) => selectSelectedItemName(id)(state));
+  const dispatch = useDispatch();
 
+  const [newName, setNewName] = useState('');
+  useEffect(() => {
+    setNewName(name);
+  }, [name]);
+
+  const handleView = () => {
     fetch(ApiRoot + VIEW_FILE, {
       method: 'GET',
       credentials: 'include',
-      headers: { username, file_id: id },
+      headers: { username, artefactID: id },
     })
       .then((res) => {
         return res.json();
@@ -45,7 +68,7 @@ const DriveItemMenu = ({ id, type }: IProps) => {
     fetch(ApiRoot + DOWNLOAD_FILE, {
       method: 'GET',
       credentials: 'include',
-      headers: { username, file_id: id },
+      headers: { username, artefactID: id },
     })
       .then((res) => {
         return res.json();
@@ -56,18 +79,64 @@ const DriveItemMenu = ({ id, type }: IProps) => {
       })
       .catch((err) => console.log(err));
   };
+
+  const onEditClick = () => {
+    const formData = new FormData();
+    formData.append('artefactID', id);
+    formData.append('newName', newName);
+    fetch(ApiRoot + RENAME_FILE_FOLDER, {
+      method: 'PUT',
+      body: formData,
+      headers: { username },
+    })
+      .then((res) => {
+        setEditOpen(false);
+        return res.json();
+      })
+      .then((res) => {
+        console.log(res);
+        if (type === 'folder') dispatch(editFolder(id, { name: newName }));
+        else dispatch(editFile(id, { name: newName }));
+      })
+      .catch((e) => console.log('Error: ', e))
+      .finally(() => {
+        setNewName('');
+      });
+  };
+
+  const onDeleteClick = () => {
+    const formData = new FormData();
+    formData.append('artefactID', id);
+    const endpt = type === 'file' ? DELETE_FILE : DELETE_FOLDER;
+    fetch(ApiRoot + endpt, {
+      method: 'DELETE',
+      body: formData,
+      headers: { username },
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then((res: IItem) => {
+        console.log(res);
+        dispatch(clearSelectedItem());
+        if (type === 'file') dispatch(deleteFile(id));
+        else dispatch(deleteFolder(id));
+      })
+      .catch((e) => console.log('Error: ', e));
+  };
+
   return (
     <div
       className='flex justify-end'
       style={{ position: 'fixed', marginBottom: '25px', width: '100vw' }}
     >
       <BootstrapTooltip title='Delete'>
-        <IconButton>
+        <IconButton onClick={onDeleteClick}>
           <DeleteIcon />
         </IconButton>
       </BootstrapTooltip>
       <BootstrapTooltip title='Edit'>
-        <IconButton>
+        <IconButton onClick={() => setEditOpen(true)}>
           <EditIcon />
         </IconButton>
       </BootstrapTooltip>
@@ -93,6 +162,35 @@ const DriveItemMenu = ({ id, type }: IProps) => {
           </Modal>
         </>
       )}
+      <Modal
+        open={editOpen}
+        smallModal
+        onClose={() => setEditOpen(false)}
+        modalName='edit-file-folder'
+        dialogTitle={`Edit ${type}`}
+        dialogActions={[
+          {
+            onBtnClick: () => setEditOpen(false),
+            btnText: 'Cancel',
+            btnStyle: { variant: 'outlined', color: 'primary' },
+          },
+          {
+            onBtnClick: onEditClick,
+            btnText: 'Save',
+            btnStyle: { variant: 'contained', color: 'primary' },
+          },
+        ]}
+      >
+        <TextField
+          id='file-folder-name'
+          label='Name'
+          value={newName}
+          onChange={(e) => setNewName(e.target.value)}
+          onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) =>
+            handleKeyPress(e, onEditClick)
+          }
+        />
+      </Modal>
     </div>
   );
 };

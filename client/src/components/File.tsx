@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { IItem } from '../pages/Drive/ListFolderItems';
 import { setSelectedItem } from '../redux/drive/drive.actions';
+import { IItem } from '../redux/drive/drive.types';
 import Card from './common/Card';
 
 interface IProps {
@@ -11,7 +11,7 @@ interface IProps {
 const File = ({ file }: IProps) => {
   const dispatch = useDispatch();
   const handleFileClick = () => {
-    dispatch(setSelectedItem({ type: file.type, id: file.file_id! }));
+    dispatch(setSelectedItem({ type: file.type, id: file.artefactID }));
   };
   return (
     <Card
