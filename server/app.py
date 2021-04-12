@@ -126,10 +126,10 @@ def addFolder():
         
         userCollection = mongo.drive[request.headers['username']]
 
-        if 'currentDir' in request.form:
-            currentDir = request.form['currentDir']
+        if 'parentArtefactID' in request.form:
+            parentArtefactID = request.form['parentArtefactID']
         else:
-            currentDir = '/root'
+            parentArtefactID = '/root'
 
         if 'absolutePath' in request.form:
             absolutePath = request.form['absolutePath']
@@ -146,13 +146,13 @@ def addFolder():
             'modified' : datetime.utcnow(),
             'starred' : False,
             'type' : 'folder',
-            'parentDir': currentDir,
+            'parentArtefactID': parentArtefactID,
             'absolutePath': absolutePath
         }
         x = userCollection.insert_one(payload)
 
         # resp = jsonify("Successfully added folder")
-        resp = jsonify({**payload, '_id': folder_id})
+        resp = jsonify({**payload, '_id': x.inserted_id})
         resp.status_code = 200
         resp.headers.add("Access-Control-Allow-Origin", "*")
         return resp
@@ -206,10 +206,10 @@ def upload():
         #adding file metadata to mongoDB as part of users collection
         userCollection = mongo.drive[request.headers['username']]
 
-        if 'currentDir' in request.form:
-            currentDir = request.form['currentDir']
+        if 'parentArtefactID' in request.form:
+            parentArtefactID = request.form['parentArtefactID']
         else:
-            currentDir = '/root'
+            parentArtefactID = '/root'
 
         if 'absolutePath' in request.form:
             absolutePath = request.form['absolutePath']
@@ -225,7 +225,7 @@ def upload():
             'modified' : datetime.utcnow(),
             'type' : 'file',
             'starred': False,
-            'parentDir': currentDir,
+            'parentArtefactID': parentArtefactID,
             'absolutePath': absolutePath,
             'cloudProvider': cloudProvider
         }
@@ -236,7 +236,7 @@ def upload():
         os.remove(f_path)
 
         # resp = jsonify("Successfully uploaded file")
-        resp = jsonify({ **payload, '_id': artefact_id })
+        resp = jsonify({ **payload, '_id': x.inserted_id })
         resp.status_code = 200
         resp.headers.add("Access-Control-Allow-Origin", "*")
         return resp

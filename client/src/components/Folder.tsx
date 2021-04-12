@@ -16,6 +16,7 @@ const Folder = ({ folder }: IProps) => {
   const dispatch = useDispatch();
 
   const { type, artefactID, name } = folder;
+  // console.log(artefactID);
 
   const { absolutePath, absIdPath, cloudProvider } = useSelector(
     selectDriveState

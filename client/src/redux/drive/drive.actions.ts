@@ -10,6 +10,10 @@ import {
   SET_DRIVE_STATE,
   SET_SELECTED_ITEM,
   CLEAR_SELECTED_ITEM,
+  PUSH_ABS_ID_PATH,
+  POP_ABS_ID_PATH,
+  SET_ABS_ID_PATH,
+  CLEAR_ABS_ID_PATH,
 } from '../constants';
 import {
   DriveActions,
@@ -78,10 +82,17 @@ export const deleteFile = (id: string): DriveActions => ({
   id,
 });
 
-// export const saveDriveStateToStorage = (driveState: DriveState) => {
-//   localStorage.setItem('driveState', JSON.stringify(driveState));
-// };
-// export const loadDriveStateFromStorage = (): DriveState => {
-//   const driveStateJson = localStorage.getItem('driveState');
-//   return !!driveStateJson ? JSON.parse(driveStateJson) : defaultDriveState;
-// };
+export const pushAbsIdPath = (id: string): DriveActions => ({
+  type: PUSH_ABS_ID_PATH,
+  id,
+});
+export const popAbsIdPath = (): DriveActions => ({
+  type: POP_ABS_ID_PATH,
+});
+export const setAbsIdPath = (path: string): DriveActions => ({
+  type: SET_ABS_ID_PATH,
+  path,
+});
+export const clearAbsIdPath = (): DriveActions => ({
+  type: CLEAR_ABS_ID_PATH,
+});

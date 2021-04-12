@@ -2,11 +2,15 @@ import { deletePropFromObject } from '../../assets/ts/utilities';
 import {
   ADD_FILE,
   ADD_FOLDER,
+  CLEAR_ABS_ID_PATH,
   CLEAR_SELECTED_ITEM,
   DELETE_FILE,
   DELETE_FOLDER,
   EDIT_FILE,
   EDIT_FOLDER,
+  POP_ABS_ID_PATH,
+  PUSH_ABS_ID_PATH,
+  SET_ABS_ID_PATH,
   SET_CLOUD_PROVIDER,
   SET_DRIVE_CONTENT,
   SET_DRIVE_STATE,
@@ -113,6 +117,40 @@ const driveReducer = (
         content: {
           ...state.content,
           folders: deletePropFromObject(state.content.folders, action.id),
+        },
+      };
+    case PUSH_ABS_ID_PATH:
+      return {
+        ...state,
+        driveState: {
+          ...state.driveState,
+          absIdPath: state.driveState.absIdPath + '/' + action.id,
+        },
+      };
+    case POP_ABS_ID_PATH:
+      return {
+        ...state,
+        driveState: {
+          ...state.driveState,
+          absIdPath:
+            state.driveState.absIdPath.split('/').slice(0, -1).join('/') ||
+            '/root',
+        },
+      };
+    case CLEAR_ABS_ID_PATH:
+      return {
+        ...state,
+        driveState: {
+          ...state.driveState,
+          absIdPath: '/root',
+        },
+      };
+    case SET_ABS_ID_PATH:
+      return {
+        ...state,
+        driveState: {
+          ...state.driveState,
+          absIdPath: action.path,
         },
       };
     default:

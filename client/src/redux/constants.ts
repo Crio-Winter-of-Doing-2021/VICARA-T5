@@ -18,3 +18,7 @@ export const EDIT_FOLDER = 'EDIT_FOLDER';
 export const DELETE_FILE = 'DELETE_FILE';
 export const DELETE_FOLDER = 'DELETE_FOLDER';
 export const SET_CLOUD_PROVIDER = 'SET_CLOUD_PROVIDER';
+export const PUSH_ABS_ID_PATH = 'PUSH_ABS_ID_PATH';
+export const POP_ABS_ID_PATH = 'POP_ABS_ID_PATH';
+export const SET_ABS_ID_PATH = 'SET_ABS_ID_PATH';
+export const CLEAR_ABS_ID_PATH = 'CLEAR_ABS_ID_PATH';

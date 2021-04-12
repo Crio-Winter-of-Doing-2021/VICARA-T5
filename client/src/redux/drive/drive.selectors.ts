@@ -12,6 +12,14 @@ export const selectDriveState = createSelector(
   [selectDrive],
   (drive) => drive.driveState
 );
+export const selectAbsPathList = createSelector(
+  [selectDriveState],
+  (driveState) => driveState.absolutePath.split('/').slice(1)
+);
+export const selectAbsPathIdList = createSelector(
+  [selectDriveState],
+  (driveState) => driveState.absIdPath.split('/').slice(1)
+);
 
 export const selectDriveContent = createSelector(
   [selectDrive],
