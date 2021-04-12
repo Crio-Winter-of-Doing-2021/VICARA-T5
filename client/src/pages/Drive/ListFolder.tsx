@@ -12,6 +12,7 @@ import {
   ApiRoot,
   CLOUD_PROVIDER,
   CURRENT_DIR,
+  PARENT_ARTEFACT_ID,
   provider_azure,
   provider_s3,
   UPLOAD,
@@ -49,7 +50,7 @@ const ListFolder = ({ match }: RouteComponentProps<MatchProps>) => {
 
   const selectedItem = useSelector(selectSelectedItem);
   const username = useSelector(selectDisplayName);
-  const { absolutePath, currentDir, cloudProvider } = useSelector(
+  const { absolutePath, parentArtefactID, cloudProvider } = useSelector(
     selectDriveState
   );
   const dispatch = useDispatch();
@@ -75,7 +76,7 @@ const ListFolder = ({ match }: RouteComponentProps<MatchProps>) => {
       //   ? location.state[ABSOLUTE_PATH] || '/root'
       //   : '/root'
     );
-    formData.append(CURRENT_DIR, currentDir);
+    formData.append(CURRENT_DIR, parentArtefactID);
     formData.append(CLOUD_PROVIDER, cloudProvider);
 
     const options: RequestInit = {
@@ -100,7 +101,7 @@ const ListFolder = ({ match }: RouteComponentProps<MatchProps>) => {
 
   const onAddClick = () => {
     const formData = new FormData();
-    formData.append(CURRENT_DIR, currentDir);
+    formData.append(PARENT_ARTEFACT_ID, parentArtefactID);
     formData.append(ABSOLUTE_PATH, absolutePath);
     formData.append('folderName', newFolderName);
     fetch(ApiRoot + ADD_FOLDER, {

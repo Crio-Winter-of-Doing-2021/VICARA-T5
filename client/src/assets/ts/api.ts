@@ -16,6 +16,8 @@ export const STAR_FILE = '/starFile';
 export const STARRED_FILES = '/allStars';
 
 export const ABSOLUTE_PATH = 'absolutePath';
+export const PARENT_ARTEFACT_ID = 'parentArtefactID';
+export const ARTEFACT_ID = 'artefactID';
 export const CURRENT_DIR = 'currentDir';
 export const CLOUD_PROVIDER = 'cloudProvider';
 
