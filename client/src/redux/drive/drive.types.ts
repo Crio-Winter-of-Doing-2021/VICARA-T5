@@ -1,12 +1,16 @@
 import { provider_azure, provider_s3 } from '../../assets/ts/api';
-import { IItem } from '../../pages/Drive/ListFolderItems';
 import {
   ADD_FILE,
   ADD_FOLDER,
+  DELETE_FILE,
+  DELETE_FOLDER,
+  EDIT_FILE,
+  EDIT_FOLDER,
   SET_CLOUD_PROVIDER,
   SET_DRIVE_CONTENT,
   SET_DRIVE_STATE,
   SET_SELECTED_ITEM,
+  CLEAR_SELECTED_ITEM,
 } from '../constants';
 
 export type ProviderType = typeof provider_azure | typeof provider_s3;
@@ -17,13 +21,30 @@ export interface DriveReducer {
   content: DriveContent;
 }
 
+export interface IItem {
+  _id: { $oid: string };
+  artefactID: string;
+  name: string;
+  created: string;
+  accessed: string;
+  modified: string;
+  type: 'file' | 'folder';
+  parentDir: string;
+  absolutePath: string;
+  cloudProvider: string;
+  starred: boolean;
+}
+export interface IItemWithId {
+  [id: string]: IItem;
+}
+
 export interface DriveContent {
-  files: IItem[];
-  folders: IItem[];
+  files: IItemWithId;
+  folders: IItemWithId;
 }
 const defaultDriveContent: DriveContent = {
-  files: [],
-  folders: [],
+  files: {},
+  folders: {},
 };
 
 export interface SelectedItem {
@@ -58,6 +79,9 @@ interface SetSelectedItemAction {
   type: typeof SET_SELECTED_ITEM;
   selected: SelectedItem;
 }
+interface ClearSelectedItemAction {
+  type: typeof CLEAR_SELECTED_ITEM;
+}
 
 interface SetDriveStateAction {
   type: typeof SET_DRIVE_STATE;
@@ -69,10 +93,12 @@ interface SetDriveContentAction {
 }
 interface AddDriveFileAction {
   type: typeof ADD_FILE;
+  id: string;
   file: IItem;
 }
 interface AddDriveFolderAction {
   type: typeof ADD_FOLDER;
+  id: string;
   folder: IItem;
 }
 interface SetCloudProvider {
@@ -80,10 +106,34 @@ interface SetCloudProvider {
   provider: ProviderType;
 }
 
+interface EditDriveFileAction {
+  type: typeof EDIT_FILE;
+  id: string;
+  file: Partial<IItem>;
+}
+interface EditDriveFolderAction {
+  type: typeof EDIT_FOLDER;
+  id: string;
+  folder: Partial<IItem>;
+}
+interface DeleteDriveFileAction {
+  type: typeof DELETE_FILE;
+  id: string;
+}
+interface DeleteDriveFolderAction {
+  type: typeof DELETE_FOLDER;
+  id: string;
+}
+
 export type DriveActions =
   | SetSelectedItemAction
+  | ClearSelectedItemAction
   | SetDriveStateAction
   | SetDriveContentAction
   | AddDriveFileAction
   | AddDriveFolderAction
-  | SetCloudProvider;
+  | SetCloudProvider
+  | EditDriveFileAction
+  | EditDriveFolderAction
+  | DeleteDriveFileAction
+  | DeleteDriveFolderAction;

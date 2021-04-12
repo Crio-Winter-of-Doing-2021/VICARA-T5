@@ -17,3 +17,12 @@ export const selectDriveContent = createSelector(
   [selectDrive],
   (drive) => drive.content
 );
+
+export const selectSelectedItemName = (id: string) =>
+  createSelector([selectSelectedItem, selectDriveContent], (item, content) =>
+    item.type === 'file' && content.files[id]
+      ? content.files[id].name
+      : content.folders[id]
+      ? content.folders[id].name
+      : ''
+  );
