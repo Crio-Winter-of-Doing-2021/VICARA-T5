@@ -26,7 +26,7 @@ const RecentsPage = () => {
         return res.json();
       })
       .then((resJson) => {
-        console.log('resJson: ', resJson);
+        // console.log('resJson: ', resJson);
         setFiles(resJson);
       })
       .catch((e) => {

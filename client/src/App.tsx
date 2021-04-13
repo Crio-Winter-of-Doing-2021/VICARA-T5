@@ -11,7 +11,6 @@ import PrivateRoute from './routes/PrivateRoute';
 import PublicRoute from './routes/PublicRoute';
 
 import {
-  FILE_ROUTE,
   FOLDERS,
   FOLDER_ROUTE,
   LOGIN_ROUTE,
@@ -28,6 +27,13 @@ const RecentsPage = lazy(() => import('./pages/Recents/RecentsPage'));
 const Appbar = lazy(() => import('./components/common/Appbar/Appbar'));
 
 const persistor = persistStore(store);
+
+export const routes: { [key: string]: string } = {
+  [LOGIN_ROUTE]: '',
+  [FOLDERS]: 'Home',
+  [RECENTS_ROUTE]: 'Recents',
+  [STARRED_ROUTE]: 'Starred',
+};
 
 const App = () => {
   return (

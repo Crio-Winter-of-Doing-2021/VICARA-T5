@@ -28,7 +28,7 @@ const StarredItems = () => {
         return res.json();
       })
       .then((resJson) => {
-        console.log('resJson: ', resJson);
+        // console.log('resJson: ', resJson);
         // if (err) {
         // setErrMsg(resJson);
         // return;

@@ -1,4 +1,4 @@
-import React, { lazy, Suspense } from 'react';
+import React, { lazy, Suspense, useEffect, useState } from 'react';
 import {
   AppBar,
   Drawer,
@@ -17,6 +17,7 @@ import { selectIsAuthenticated } from '../../../redux/auth/auth.selectors';
 import DottedLineLoader from '../Loaders/Loader';
 import { FOLDERS } from '../../../routes/routes';
 import Sidebar from './Sidebar';
+import { routes } from '../../../App';
 
 const LogoText = lazy(() => import('./LogoText'));
 const UserProfile = lazy(() => import('./UserProfile'));
@@ -88,15 +89,22 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface AppbarProps {
-  pageTitle?: string;
   displayBackBtn?: boolean;
 }
 
 const drawerWidth = 240;
 
-const Appbar = ({ pageTitle, displayBackBtn }: AppbarProps) => {
+const Appbar = ({ displayBackBtn }: AppbarProps) => {
   const classes = useStyles();
   const location = useLocation() as any;
+
+  const [pageTitle, setPageTitle] = useState('');
+
+  useEffect(() => {
+    const x = location.pathname.split('/');
+    const pageTitle = x.length >= 1 ? routes['/' + x[1]] || '' : '';
+    setPageTitle(pageTitle);
+  }, [location.pathname]);
 
   const authenticated = useSelector(selectIsAuthenticated);
   const [open, setOpen] = React.useState(false);
@@ -156,7 +164,7 @@ const Appbar = ({ pageTitle, displayBackBtn }: AppbarProps) => {
               </div>
             </div>
             <Typography className='ml1' variant='h6' color='inherit'>
-              <span>{pageTitle || ''}</span>
+              <span>{pageTitle}</span>
             </Typography>
             {authenticated && (
               <Suspense fallback={<DottedLineLoader />}>
