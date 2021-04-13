@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { ApiRoot, STARRED_FILES } from '../../assets/ts/api';
+import { ApiRoot, RECENTS } from '../../assets/ts/api';
 import DottedLineLoader from '../../components/common/Loaders/Loader';
 import File from '../../components/File';
 import { selectDisplayName } from '../../redux/auth/auth.selectors';
 import { IItem } from '../../redux/drive/drive.types';
 
-const StarredItems = () => {
+const RecentsPage = () => {
   const [files, setFiles] = useState<IItem[]>([]);
   const [errMsg, setErrMsg] = useState('');
   const [loading, setLoading] = useState(false);
@@ -16,22 +16,16 @@ const StarredItems = () => {
   useEffect(() => {
     // const location = window.location as any;
     setLoading(true);
-    fetch(ApiRoot + STARRED_FILES, {
+    fetch(ApiRoot + RECENTS, {
       method: 'GET',
       credentials: 'include',
       headers: { username },
     })
       .then((res) => {
-        // console.log(res);
-        // if (res.status === 400) setErr(true);
         return res.json();
       })
       .then((resJson) => {
         console.log('resJson: ', resJson);
-        // if (err) {
-        // setErrMsg(resJson);
-        // return;
-        // }
         setFiles(resJson);
       })
       .catch((e) => {
@@ -63,4 +57,4 @@ const StarredItems = () => {
   );
 };
 
-export default StarredItems;
+export default RecentsPage;

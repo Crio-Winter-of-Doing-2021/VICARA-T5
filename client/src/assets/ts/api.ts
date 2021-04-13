@@ -14,6 +14,7 @@ export const DELETE_FOLDER = '/deleteFolder';
 export const RENAME_FILE_FOLDER = '/rename';
 export const STAR_FILE = '/starFile';
 export const STARRED_FILES = '/allStars';
+export const RECENTS = '/getRecent';
 
 export const ABSOLUTE_PATH = 'absolutePath';
 export const PARENT_ARTEFACT_ID = 'parentArtefactID';
