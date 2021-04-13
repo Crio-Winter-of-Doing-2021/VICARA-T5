@@ -26,7 +26,7 @@ export interface DriveReducer {
 }
 
 export interface IItem {
-  _id: { $oid: string };
+  _id: any;
   artefactID: string;
   name: string;
   created: string;
