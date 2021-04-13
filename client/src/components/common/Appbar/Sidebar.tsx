@@ -13,35 +13,42 @@ import {
 } from '@material-ui/icons';
 import { NavLink } from 'react-router-dom';
 import { FOLDERS, STARRED_ROUTE, RECENTS_ROUTE } from '../../../routes/routes';
+import BootstrapTooltip from '../BootstrapTooltip';
+
+const items = [
+  {
+    text: 'My Drive',
+    link: FOLDERS,
+    Icon: Storage,
+  },
+  {
+    text: 'Starred',
+    link: STARRED_ROUTE,
+    Icon: Starred,
+  },
+  {
+    text: 'Recents',
+    link: RECENTS_ROUTE,
+    Icon: Recents,
+  },
+];
 
 const Sidebar = () => {
   return (
     <>
       <List>
-        <NavLink className='nav-style' to={FOLDERS}>
-          <ListItem button>
-            <ListItemIcon>
-              <Storage />
-            </ListItemIcon>
-            <ListItemText primary={'My Drive'} />
-          </ListItem>
-        </NavLink>
-        <NavLink className='nav-style' to={STARRED_ROUTE}>
-          <ListItem button>
-            <ListItemIcon>
-              <Starred />
-            </ListItemIcon>
-            <ListItemText primary={'Starred'} />
-          </ListItem>
-        </NavLink>
-        <NavLink className='nav-style' to={RECENTS_ROUTE}>
-          <ListItem button>
-            <ListItemIcon>
-              <Recents />
-            </ListItemIcon>
-            <ListItemText primary={'Recents'} />
-          </ListItem>
-        </NavLink>
+        {items.map((item, i) => (
+          <NavLink className='nav-style' to={item.link} key={i}>
+            <BootstrapTooltip title={item.text} placement='right'>
+              <ListItem button>
+                <ListItemIcon>
+                  <item.Icon />
+                </ListItemIcon>
+                <ListItemText primary={item.text} />
+              </ListItem>
+            </BootstrapTooltip>
+          </NavLink>
+        ))}
       </List>
       <Divider />
       <List></List>

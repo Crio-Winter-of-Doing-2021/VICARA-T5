@@ -76,9 +76,6 @@ const useStyles = makeStyles((theme) => ({
     }),
     overflowX: 'hidden',
     width: theme.spacing(7) + 1,
-    [theme.breakpoints.up('sm')]: {
-      width: theme.spacing(9) + 1,
-    },
   },
   toolbar: {
     display: 'flex',
@@ -87,11 +84,6 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(0, 1),
     // necessary for content to be below app bar
     ...theme.mixins.toolbar,
-  },
-  content: {
-    flexGrow: 1,
-    backgroundColor: theme.palette.background.default,
-    padding: theme.spacing(3),
   },
 }));
 
@@ -131,35 +123,37 @@ const Appbar = ({ pageTitle, displayBackBtn }: AppbarProps) => {
             className='header'
             style={{ justifyContent: 'space-between' }}
           >
-            <IconButton
-              color='inherit'
-              aria-label='open drawer'
-              onClick={handleDrawerOpen}
-              edge='start'
-              className={clsx(classes.menuButton, {
-                [classes.hide]: open,
-              })}
-            >
-              <MenuIcon />
-            </IconButton>
-            <div className='flex items-center'>
-              {displayBackBtn && (
-                <Link
-                  to={
-                    !!location.state &&
-                    location.state.hasOwnProperty('prevPath')
-                      ? location.state.prevPath
-                      : FOLDERS
-                  }
-                >
-                  <IconButton>
-                    <ArrowBack />
-                  </IconButton>
-                </Link>
-              )}
-              <Suspense fallback={<DottedLineLoader />}>
-                <LogoText />
-              </Suspense>
+            <div className='flex'>
+              <IconButton
+                color='inherit'
+                aria-label='open drawer'
+                onClick={handleDrawerOpen}
+                edge='start'
+                className={clsx(classes.menuButton, {
+                  [classes.hide]: open,
+                })}
+              >
+                <MenuIcon />
+              </IconButton>
+              <div className='flex items-center'>
+                {displayBackBtn && (
+                  <Link
+                    to={
+                      !!location.state &&
+                      location.state.hasOwnProperty('prevPath')
+                        ? location.state.prevPath
+                        : FOLDERS
+                    }
+                  >
+                    <IconButton>
+                      <ArrowBack />
+                    </IconButton>
+                  </Link>
+                )}
+                <Suspense fallback={<DottedLineLoader />}>
+                  <LogoText />
+                </Suspense>
+              </div>
             </div>
             <Typography className='ml1' variant='h6' color='inherit'>
               <span>{pageTitle || ''}</span>
@@ -195,9 +189,9 @@ const Appbar = ({ pageTitle, displayBackBtn }: AppbarProps) => {
           <Sidebar />
         </Drawer>
       </div>
-      <div className={classes.content}>
+      {/* <div className={classes.content}>
         <div className={classes.toolbar} />
-      </div>
+      </div> */}
     </div>
   );
 };

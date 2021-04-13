@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { ApiRoot, STARRED_FILES } from '../../assets/ts/api';
+import usePageStyles from '../../assets/tsx/usePageStyle';
 import DottedLineLoader from '../../components/common/Loaders/Loader';
 import File from '../../components/File';
 import { selectDisplayName } from '../../redux/auth/auth.selectors';
@@ -43,22 +44,27 @@ const StarredItems = () => {
       });
   }, [username]);
 
+  const classes = usePageStyles();
+
   return (
-    <div className='flex flex-column'>
-      {!loading ? (
-        !!files.length ? (
-          <div className='flex list-folder-items-container flex-wrap'>
-            {files.map((x, i) => (
-              <File file={x} key={i} />
-            ))}
-          </div>
+    <div className={classes.content}>
+      <div className={classes.toolbar} />
+      <div className='flex flex-column'>
+        {!loading ? (
+          !!files.length ? (
+            <div className='flex list-folder-items-container flex-wrap'>
+              {files.map((x, i) => (
+                <File file={x} key={i} />
+              ))}
+            </div>
+          ) : (
+            <div>No files starred</div>
+          )
         ) : (
-          <div>No files starred</div>
-        )
-      ) : (
-        <DottedLineLoader />
-      )}
-      {!!errMsg && <div className='red'>{errMsg}</div>}
+          <DottedLineLoader />
+        )}
+        {!!errMsg && <div className='red'>{errMsg}</div>}
+      </div>
     </div>
   );
 };
