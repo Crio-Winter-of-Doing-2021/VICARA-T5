@@ -34,6 +34,7 @@ import {
   setCloudProvider,
 } from '../../redux/drive/drive.actions';
 import { IItem } from '../../redux/drive/drive.types';
+import usePageStyles from '../../assets/tsx/usePageStyle';
 
 interface MatchProps {
   id?: string;
@@ -120,86 +121,91 @@ const ListFolder = ({ match }: RouteComponentProps<MatchProps>) => {
       .catch((e) => console.log('Error: ', e));
   };
 
-  return (
-    <div className='flex flex-column items-center'>
-      {selectedItem.id && selectedItem.type && (
-        <DriveItemMenu id={selectedItem.id} type={selectedItem.type} />
-      )}
-      <div className='flex'>
-        <div className='left items-center'>
-          <Button
-            variant='contained'
-            color='primary'
-            startIcon={<CreateNewFolderIcon />}
-            onClick={() => setOpen(true)}
-          >
-            New Folder
-          </Button>
-          <Modal
-            open={open}
-            smallModal
-            onClose={() => setOpen(false)}
-            modalName='add-folder'
-            dialogTitle='Create Folder'
-            dialogActions={[
-              {
-                onBtnClick: () => setOpen(false),
-                btnText: 'Cancel',
-                btnStyle: { variant: 'outlined', color: 'primary' },
-              },
-              {
-                onBtnClick: onAddClick,
-                btnText: 'Create',
-                btnStyle: { variant: 'contained', color: 'primary' },
-              },
-            ]}
-          >
-            <TextField
-              id='new-folder-name'
-              label='Folder Name'
-              value={newFolderName}
-              onChange={(e) => setNewFolderName(e.target.value)}
-              onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) =>
-                handleKeyPress(e, onAddClick)
-              }
-            />
-          </Modal>
+  const classes = usePageStyles();
 
-          <Button
-            variant='contained'
-            color='secondary'
-            startIcon={<CloudUploadIcon />}
-            component='label'
-          >
-            Upload File
-            <input
-              id='file-input'
-              type='file'
-              name='file'
-              onChange={uploadFile}
-              className='dn'
-            />
-          </Button>
-          <div>
-            <InputLabel id='provider-select'>Upload to</InputLabel>
-            <Select
-              labelId='provider-select'
-              value={cloudProvider}
-              onChange={(e) => {
-                dispatch(setCloudProvider(e.target.value as ProviderType));
-              }}
+  return (
+    <main className={classes.content}>
+      <div className={classes.toolbar} />
+      <div className='flex flex-column items-center flex-wrap'>
+        {selectedItem.id && selectedItem.type && (
+          <DriveItemMenu id={selectedItem.id} type={selectedItem.type} />
+        )}
+        <div className='flex'>
+          <div className='left items-center'>
+            <Button
+              variant='contained'
+              color='primary'
+              startIcon={<CreateNewFolderIcon />}
+              onClick={() => setOpen(true)}
             >
-              <MenuItem value={provider_azure}>{provider_azure}</MenuItem>
-              <MenuItem value={provider_s3}>{provider_s3}</MenuItem>
-            </Select>
+              New Folder
+            </Button>
+            <Modal
+              open={open}
+              smallModal
+              onClose={() => setOpen(false)}
+              modalName='add-folder'
+              dialogTitle='Create Folder'
+              dialogActions={[
+                {
+                  onBtnClick: () => setOpen(false),
+                  btnText: 'Cancel',
+                  btnStyle: { variant: 'outlined', color: 'primary' },
+                },
+                {
+                  onBtnClick: onAddClick,
+                  btnText: 'Create',
+                  btnStyle: { variant: 'contained', color: 'primary' },
+                },
+              ]}
+            >
+              <TextField
+                id='new-folder-name'
+                label='Folder Name'
+                value={newFolderName}
+                onChange={(e) => setNewFolderName(e.target.value)}
+                onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) =>
+                  handleKeyPress(e, onAddClick)
+                }
+              />
+            </Modal>
+
+            <Button
+              variant='contained'
+              color='secondary'
+              startIcon={<CloudUploadIcon />}
+              component='label'
+            >
+              Upload File
+              <input
+                id='file-input'
+                type='file'
+                name='file'
+                onChange={uploadFile}
+                className='dn'
+              />
+            </Button>
+            <div>
+              <InputLabel id='provider-select'>Upload to</InputLabel>
+              <Select
+                labelId='provider-select'
+                value={cloudProvider}
+                onChange={(e) => {
+                  dispatch(setCloudProvider(e.target.value as ProviderType));
+                }}
+              >
+                <MenuItem value={provider_azure}>{provider_azure}</MenuItem>
+                <MenuItem value={provider_s3}>{provider_s3}</MenuItem>
+              </Select>
+            </div>
+          </div>
+          <div className='right'>
+            <Breadcrumb />
+            <ListFolderItems id={id || '/root'} />
           </div>
         </div>
-        <div className='right'>
-          <Breadcrumb />
-          <ListFolderItems id={id || '/root'} />
-        </div>
       </div>
-    </div>
+    </main>
   );
 };
 
