@@ -132,17 +132,19 @@ const Appbar = ({ displayBackBtn }: AppbarProps) => {
             style={{ justifyContent: 'space-between' }}
           >
             <div className='flex'>
-              <IconButton
-                color='inherit'
-                aria-label='open drawer'
-                onClick={handleDrawerOpen}
-                edge='start'
-                className={clsx(classes.menuButton, {
-                  [classes.hide]: open,
-                })}
-              >
-                <MenuIcon />
-              </IconButton>
+              {authenticated && (
+                <IconButton
+                  color='inherit'
+                  aria-label='open drawer'
+                  onClick={handleDrawerOpen}
+                  edge='start'
+                  className={clsx(classes.menuButton, {
+                    [classes.hide]: open,
+                  })}
+                >
+                  <MenuIcon />
+                </IconButton>
+              )}
               <div className='flex items-center'>
                 {displayBackBtn && (
                   <Link
@@ -175,27 +177,29 @@ const Appbar = ({ displayBackBtn }: AppbarProps) => {
             )}
           </Toolbar>
         </AppBar>
-        <Drawer
-          variant='permanent'
-          className={clsx(classes.drawer, {
-            [classes.drawerOpen]: open,
-            [classes.drawerClose]: !open,
-          })}
-          classes={{
-            paper: clsx({
+        {authenticated && (
+          <Drawer
+            variant='permanent'
+            className={clsx(classes.drawer, {
               [classes.drawerOpen]: open,
               [classes.drawerClose]: !open,
-            }),
-          }}
-        >
-          <div className={classes.toolbar}>
-            <IconButton onClick={handleDrawerClose}>
-              <ChevronLeft />
-            </IconButton>
-          </div>
-          <Divider />
-          <Sidebar />
-        </Drawer>
+            })}
+            classes={{
+              paper: clsx({
+                [classes.drawerOpen]: open,
+                [classes.drawerClose]: !open,
+              }),
+            }}
+          >
+            <div className={classes.toolbar}>
+              <IconButton onClick={handleDrawerClose}>
+                <ChevronLeft />
+              </IconButton>
+            </div>
+            <Divider />
+            <Sidebar />
+          </Drawer>
+        )}
       </div>
       {/* <div className={classes.content}>
         <div className={classes.toolbar} />
