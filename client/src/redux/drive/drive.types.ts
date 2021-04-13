@@ -89,7 +89,7 @@ interface ClearSelectedItemAction {
 
 interface SetDriveStateAction {
   type: typeof SET_DRIVE_STATE;
-  driveState: DriveState;
+  driveState: Partial<DriveState>;
 }
 interface SetDriveContentAction {
   type: typeof SET_DRIVE_CONTENT;

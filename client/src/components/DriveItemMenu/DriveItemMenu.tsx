@@ -128,7 +128,7 @@ const DriveItemMenu = ({ id, type }: IProps) => {
   return (
     <div
       className='flex justify-end'
-      style={{ position: 'fixed', marginBottom: '25px', width: '100vw' }}
+      style={{ position: 'fixed', marginBottom: '25px', right: 0 }}
     >
       <BootstrapTooltip title='Delete'>
         <IconButton onClick={onDeleteClick}>
