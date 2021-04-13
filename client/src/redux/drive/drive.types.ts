@@ -33,7 +33,7 @@ export interface IItem {
   accessed: string;
   modified: string;
   type: 'file' | 'folder';
-  parentDir: string;
+  parentArtefactID: string;
   absolutePath: string;
   cloudProvider: string;
   starred: boolean;
@@ -61,13 +61,13 @@ export const defaultSelectedItem: SelectedItem = {
 };
 
 export interface DriveState {
-  currentDir: string;
+  parentArtefactID: string;
   absolutePath: string;
   absIdPath: string;
   cloudProvider: ProviderType;
 }
 export const defaultDriveState: DriveState = {
-  currentDir: '/root',
+  parentArtefactID: '/root',
   absolutePath: '/root',
   absIdPath: '/root',
   cloudProvider: provider_azure,

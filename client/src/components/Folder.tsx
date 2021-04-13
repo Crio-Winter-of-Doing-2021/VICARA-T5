@@ -40,7 +40,7 @@ const Folder = ({ folder }: IProps) => {
           const newDriveState: DriveState = {
             cloudProvider,
             absolutePath: absolutePath + '/' + name,
-            currentDir: name,
+            parentArtefactID: artefactID,
             absIdPath: absIdPath + '/' + artefactID,
           };
           dispatch(setDriveState(newDriveState));
