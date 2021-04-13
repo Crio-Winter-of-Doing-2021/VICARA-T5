@@ -152,7 +152,7 @@ def addFolder():
         x = userCollection.insert_one(payload)
 
         # resp = jsonify("Successfully added folder")
-        resp = jsonify({**payload, '_id': artefact_id})
+        resp = jsonify({**payload, '_id' : artefact_id})
         resp.status_code = 200
         resp.headers.add("Access-Control-Allow-Origin", "*")
         return resp
@@ -394,43 +394,35 @@ def renameFile():
 def deleteFile():
     #if user is logged in
     if 'username' in request.headers: 
-        #adding file metadata to mongoDB as part of users collection
+        
         userCollection = mongo.drive[request.headers['username']]
+        fileData = userCollection.find_one({'artefactID': request.form['artefactID']})
+        cloudProvider = fileData['cloudProvider']
+        # print(file_id)
+
+        users = mongo.users.info
+        userData = users.find_one({'username': request.headers['username']})
+
+        if cloudProvider == 'Azure':
+            #deleting from azure storage
+            blob_client = blob_service_client.get_blob_client(container=userData['container'], blob=request.form['artefactID'])
+            blob_client.delete_blob()
+
+        else:
+            #deleting from aws s3
+            print('EnteringAWS')
+            print(userData['container'])
+            #s3_resource.Bucket(aws_bucket_name).upload_file(f_path, userData['container']+'/'+file_id)
+            file_object = s3_resource.Object(aws_bucket_name, userData['container']+'/'+request.form['artefactID'])
+            file_object.delete()
+        
+        #adding file metadata to mongoDB as part of users collection
+        
         userCollection.delete_one({'artefactID': request.form['artefactID']})
         resp = jsonify('file deleted successfully')
         resp.status_code = 200
         resp.headers.add("Access-Control-Allow-Origin", "*")
         return resp
-        
-        #TODO: Perform actual delete
-        # print(file_id)
-
-        # users = mongo.users.info
-        # userData = users.find_one({'username': request.headers['username']})
-
-        # file_mime_type, _ = mimetypes.guess_type(file_id)
-
-        # if 'cloudProvider' in request.form:
-        #     cloudProvider = request.form['cloudProvider']
-        # else:
-        #     cloudProvider = 'Azure'
-
-        # if cloudProvider == 'Azure':
-        #     #uploading to azure storage
-        #     my_content_settings = ContentSettings(content_type=file_mime_type, content_disposition= 'inline')
-
-        #     blob_client = blob_service_client.get_blob_client(container=userData['container'], blob=file_id)
-        #     with open(f_path, "rb") as data:
-        #         blob_client.upload_blob(data, content_settings=my_content_settings)
-
-        # else:
-        #     #uploading to aws s3
-        #     print('EnteringAWS')
-        #     print(userData['container'])
-        #     print(file_mime_type)
-        #     #s3_resource.Bucket(aws_bucket_name).upload_file(f_path, userData['container']+'/'+file_id)
-        #     s3_resource.Bucket(aws_bucket_name).upload_file(f_path, userData['container']+'/'+file_id, ExtraArgs={'ContentType': file_mime_type, 'ContentDisposition' : 'inline' })
-        
         # #TODO: Add exception handling for cases such as blob already exsiting 
         
         # #adding file metadata to mongoDB as part of users collection
