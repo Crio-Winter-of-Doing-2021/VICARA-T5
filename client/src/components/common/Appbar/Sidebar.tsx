@@ -7,7 +7,7 @@ import {
   ListItemText,
 } from '@material-ui/core';
 import {
-  Star as Starred,
+  StarOutline as Starred,
   Storage,
   AccessTime as Recents,
 } from '@material-ui/icons';
