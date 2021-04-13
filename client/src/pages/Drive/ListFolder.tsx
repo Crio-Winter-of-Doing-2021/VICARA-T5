@@ -126,7 +126,7 @@ const ListFolder = ({ match }: RouteComponentProps<MatchProps>) => {
   return (
     <main className={classes.content}>
       <div className={classes.toolbar} />
-      <div className='flex flex-column items-center flex-wrap'>
+      <div className='flex flex-column flex-wrap justify-between'>
         {selectedItem.id && selectedItem.type && (
           <DriveItemMenu id={selectedItem.id} type={selectedItem.type} />
         )}
