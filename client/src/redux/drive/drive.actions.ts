@@ -32,7 +32,9 @@ export const clearSelectedItem = (): DriveActions => ({
   type: CLEAR_SELECTED_ITEM,
 });
 
-export const setDriveState = (driveState: DriveState): DriveActions => ({
+export const setDriveState = (
+  driveState: Partial<DriveState>
+): DriveActions => ({
   type: SET_DRIVE_STATE,
   driveState,
 });

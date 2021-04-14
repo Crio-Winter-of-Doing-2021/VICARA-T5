@@ -41,7 +41,7 @@ const driveReducer = (
     case SET_DRIVE_STATE:
       return {
         ...state,
-        driveState: action.driveState,
+        driveState: { ...state.driveState, ...action.driveState },
       };
     case SET_DRIVE_CONTENT:
       return { ...state, content: action.content };

@@ -26,7 +26,7 @@ export interface DriveReducer {
 }
 
 export interface IItem {
-  _id: { $oid: string };
+  _id: any;
   artefactID: string;
   name: string;
   created: string;
@@ -89,7 +89,7 @@ interface ClearSelectedItemAction {
 
 interface SetDriveStateAction {
   type: typeof SET_DRIVE_STATE;
-  driveState: DriveState;
+  driveState: Partial<DriveState>;
 }
 interface SetDriveContentAction {
   type: typeof SET_DRIVE_CONTENT;
