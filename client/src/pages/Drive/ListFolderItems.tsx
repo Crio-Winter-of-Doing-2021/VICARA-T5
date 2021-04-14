@@ -50,6 +50,7 @@ const ListFolderItems = ({ id }: { id: string }) => {
           return;
         }
         const res = resJson as IItem[];
+        // console.log(res);
         const dirs = convertArrayToObj<IItem, IItemWithId>(
           res.filter((x: IItem) => x.type === 'folder'),
           'artefactID'

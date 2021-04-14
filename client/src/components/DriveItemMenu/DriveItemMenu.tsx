@@ -5,12 +5,12 @@ import {
   Edit as EditIcon,
   CloudDownload as DownloadIcon,
   Pageview as ViewIcon,
+  FolderOpen as MoveIcon,
 } from '@material-ui/icons';
 import BootstrapTooltip from '../common/BootstrapTooltip';
 import {
   ApiRoot,
-  DELETE_FILE,
-  DELETE_FOLDER,
+  DELETE_FILE_FOLDER,
   DOWNLOAD_FILE,
   RENAME_FILE_FOLDER,
   VIEW_FILE,
@@ -107,8 +107,7 @@ const DriveItemMenu = ({ id, type }: IProps) => {
   const onDeleteClick = () => {
     const formData = new FormData();
     formData.append('artefactID', id);
-    const endpt = type === 'file' ? DELETE_FILE : DELETE_FOLDER;
-    fetch(ApiRoot + endpt, {
+    fetch(ApiRoot + DELETE_FILE_FOLDER, {
       method: 'DELETE',
       body: formData,
       headers: { username },
@@ -125,6 +124,8 @@ const DriveItemMenu = ({ id, type }: IProps) => {
       .catch((e) => console.log('Error: ', e));
   };
 
+  const handleMoveClick = () => {};
+
   return (
     <div
       className='flex justify-end'
@@ -135,7 +136,7 @@ const DriveItemMenu = ({ id, type }: IProps) => {
           <DeleteIcon />
         </IconButton>
       </BootstrapTooltip>
-      <BootstrapTooltip title='Edit'>
+      <BootstrapTooltip title='Rename'>
         <IconButton onClick={() => setEditOpen(true)}>
           <EditIcon />
         </IconButton>
@@ -150,6 +151,11 @@ const DriveItemMenu = ({ id, type }: IProps) => {
           <BootstrapTooltip title='View'>
             <IconButton onClick={handleView}>
               <ViewIcon />
+            </IconButton>
+          </BootstrapTooltip>
+          <BootstrapTooltip title='Move to'>
+            <IconButton onClick={handleMoveClick}>
+              <MoveIcon />
             </IconButton>
           </BootstrapTooltip>
           <Modal

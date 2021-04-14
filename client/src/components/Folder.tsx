@@ -35,12 +35,13 @@ const Folder = ({ folder }: IProps) => {
         startIcon={<FolderIcon />}
         onClick={handleFolderClick}
         onDoubleClick={() => {
-          history.push({ pathname: '/folders/' + artefactID });
+          const parentArtefactID = artefactID === 'root' ? '/root' : artefactID;
+          history.push({ pathname: '/folders/' + parentArtefactID });
           // console.log(absolutePath);
           const newDriveState: DriveState = {
             cloudProvider,
             absolutePath: absolutePath + '/' + name,
-            parentArtefactID: artefactID,
+            parentArtefactID,
             absIdPath: absIdPath + '/' + artefactID,
           };
           dispatch(setDriveState(newDriveState));

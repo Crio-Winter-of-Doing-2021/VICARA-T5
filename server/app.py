@@ -508,8 +508,8 @@ def organizeFile():
     if 'username' in request.headers:
         userCollection = mongo.drive[request.headers['username']]
         fullPath = request.form['newAbsPath']
-        parentDir = fullPath.rsplit('/', 1)[-1] 
-        userCollection.update_one({'artefactID': request.form['artefactID']},{ "$set": {'parentDir': parentDir, 'absolutePath': request.form['absolutePath'], 'modified' : datetime.utcnow() } })     
+        parentDir = fullPath.rsplit('/', 1)[-1]
+        userCollection.update_one({'artefactID': request.form['artefactID']},{ "$set": {'parentDir': parentDir, 'absolutePath': request.form['absolutePath'], 'modified' : datetime.utcnow() } })
         resp = jsonify('file successfully relocated')
         resp.status_code = 200
         resp.headers.add("Access-Control-Allow-Origin", "http://localhost:8080")

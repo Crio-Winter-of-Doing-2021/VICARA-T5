@@ -55,7 +55,8 @@ const File = ({ file }: IProps) => {
           display: 'flex',
           alignSelf: 'flex-end',
           padding: 0,
-          marginTop: '24px',
+          position: 'absolute',
+          bottom: '5px',
         }}
       >
         <Rating

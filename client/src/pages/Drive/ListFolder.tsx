@@ -11,7 +11,6 @@ import {
   ADD_FOLDER,
   ApiRoot,
   CLOUD_PROVIDER,
-  CURRENT_DIR,
   PARENT_ARTEFACT_ID,
   provider_azure,
   provider_s3,
@@ -45,9 +44,6 @@ const ListFolder = ({ match }: RouteComponentProps<MatchProps>) => {
   const { id } = match.params; // folder id
   const [open, setOpen] = useState(false);
   const [newFolderName, setNewFolderName] = useState('');
-  // const [cloudProvider, setCloudProvider] = useState<ProviderType>(
-  //   provider_azure
-  // );
 
   const selectedItem = useSelector(selectSelectedItem);
   const username = useSelector(selectDisplayName);
@@ -55,8 +51,9 @@ const ListFolder = ({ match }: RouteComponentProps<MatchProps>) => {
     selectDriveState
   );
   const dispatch = useDispatch();
+  // console.log('parentArtefactID', parentArtefactID);
 
-  console.log('id: ', id);
+  // console.log('id: ', id);
 
   const uploadFile = (event: any) => {
     const file = event.target.files[0];
@@ -70,14 +67,8 @@ const ListFolder = ({ match }: RouteComponentProps<MatchProps>) => {
     const formData = new FormData();
     console.log(absolutePath);
     formData.append('file', file);
-    formData.append(
-      ABSOLUTE_PATH,
-      absolutePath
-      // location.hasOwnProperty('state')
-      //   ? location.state[ABSOLUTE_PATH] || '/root'
-      //   : '/root'
-    );
-    formData.append(CURRENT_DIR, parentArtefactID);
+    formData.append(ABSOLUTE_PATH, absolutePath);
+    formData.append(PARENT_ARTEFACT_ID, parentArtefactID);
     formData.append(CLOUD_PROVIDER, cloudProvider);
 
     const options: RequestInit = {
@@ -105,6 +96,7 @@ const ListFolder = ({ match }: RouteComponentProps<MatchProps>) => {
     formData.append(PARENT_ARTEFACT_ID, parentArtefactID);
     formData.append(ABSOLUTE_PATH, absolutePath);
     formData.append('folderName', newFolderName);
+    // formData.append(CLOUD_PROVIDER, cloudProvider);
     fetch(ApiRoot + ADD_FOLDER, {
       method: 'POST',
       body: formData,
