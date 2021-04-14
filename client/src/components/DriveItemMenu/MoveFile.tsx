@@ -1,42 +1,57 @@
 import React, { useEffect, useState } from 'react';
 import { Button } from '@material-ui/core';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
+  ABSOLUTE_PATH,
   ApiRoot,
   ARTEFACT_ID,
   GET_FOLDER_ITEMS,
   ORGANIZE_FILE,
+  PARENT_ARTEFACT_ID,
 } from '../../assets/ts/api';
 import { convertArrayToObj, isObjEmpty } from '../../assets/ts/utilities';
 import { selectDisplayName } from '../../redux/auth/auth.selectors';
 import { IItem, IItemWithId } from '../../redux/drive/drive.types';
+import { selectGetParentArtefactIdOfFile } from '../../redux/drive/drive.selectors';
 import DottedLineLoader from '../common/Loaders/Loader';
 import FolderItem from './FolderItem';
+import { deleteFile } from '../../redux/drive/drive.actions';
 
 interface IProps {
   artefactID: string;
 }
 
 const MoveFile = ({ artefactID }: IProps) => {
-  const [id, setId] = useState('/root');
+  const [id, setId] = useState('/root'); // parentArtefactID
   const [absolutePath, setAbsolutePath] = useState('/root');
   const [loading, setLoading] = useState(false);
   const [folders, setFolders] = useState<IItemWithId>({});
 
   const username = useSelector(selectDisplayName);
+  const prevParentArtefactId = useSelector((state: any) =>
+    selectGetParentArtefactIdOfFile(artefactID)(state)
+  );
+
+  const dispatch = useDispatch();
 
   const handleMove = () => {
     // move from artefactID to new absolute path
     const formData = new FormData();
-    formData.append('absolutePath', absolutePath);
-    formData.append('artefactID', artefactID);
+    formData.append(ABSOLUTE_PATH, absolutePath);
+    formData.append(ARTEFACT_ID, artefactID); // the id of the file
+    formData.append(PARENT_ARTEFACT_ID, id);
     fetch(ApiRoot + ORGANIZE_FILE, {
       method: 'PUT',
       body: formData,
       headers: { username },
     })
       .then((res) => res.json())
-      .then((res) => console.log(res))
+      .then((res) => {
+        console.log(res);
+        if (prevParentArtefactId !== id) {
+          dispatch(deleteFile(artefactID));
+        }
+      })
       .catch((e) => console.log('Error moving: ', e));
   };
 

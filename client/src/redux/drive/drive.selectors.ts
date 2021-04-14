@@ -26,6 +26,11 @@ export const selectDriveContent = createSelector(
   (drive) => drive.content
 );
 
+export const selectGetParentArtefactIdOfFile = (artId: string) =>
+  createSelector([selectDriveContent], (content) =>
+    content.files[artId] ? content.files[artId].parentArtefactID : '/root'
+  );
+
 export const selectSelectedItemName = (id: string) =>
   createSelector([selectSelectedItem, selectDriveContent], (item, content) =>
     item.type === 'file' && content.files[id]
