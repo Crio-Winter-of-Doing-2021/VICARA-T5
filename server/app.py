@@ -397,6 +397,16 @@ def deleteFile():
         
         userCollection = mongo.drive[request.headers['username']]
         fileData = userCollection.find_one({'artefactID': request.form['artefactID']})
+        
+        if fileData['type'] == 'folder':
+            #deleting folder directly
+            userCollection.delete_one({'artefactID': request.form['artefactID']})
+            resp = jsonify('folder deleted successfully')
+            resp.status_code = 200
+            resp.headers.add("Access-Control-Allow-Origin", "*")
+            return resp
+
+
         cloudProvider = fileData['cloudProvider']
         # print(file_id)
 
@@ -425,43 +435,6 @@ def deleteFile():
         return resp
         # #TODO: Add exception handling for cases such as blob already exsiting 
         
-        # #adding file metadata to mongoDB as part of users collection
-        # userCollection = mongo.drive[request.headers['username']]
-
-        # if 'currentDir' in request.form:
-        #     currentDir = request.form['currentDir']
-        # else:
-        #     currentDir = '/root'
-
-        # if 'absolutePath' in request.form:
-        #     absolutePath = request.form['absolutePath']
-        # else:
-        #     absolutePath = '/root'
-
-
-        # payload = {
-        #     'name' : secure_filename(f.filename),
-        #     'file_id' : file_id,
-        #     'created' : datetime.utcnow(),
-        #     'accessed' : datetime.utcnow(),
-        #     'modified' : datetime.utcnow(),
-        #     'type' : 'file',
-        #     'parentDir': currentDir,
-        #     'absolutePath': absolutePath,
-        #     'cloudProvider': cloudProvider
-        # }
-
-        # x = userCollection.insert_one(payload)
-
-        # # delete file after upload from server
-        # os.remove(f_path)
-
-        # # resp = jsonify("Successfully uploaded file")
-        # resp = jsonify({ **payload, '_id': file_id })
-        # resp.status_code = 200
-        # resp.headers.add("Access-Control-Allow-Origin", "*")
-        # return resp
-
     resp = jsonify('Login to be able to delete a file')
     resp.status_code = 403
     resp.headers.add("Access-Control-Allow-Origin", "*")
@@ -507,9 +480,8 @@ def organizeFile():
     #if user is logged in
     if 'username' in request.headers:
         userCollection = mongo.drive[request.headers['username']]
-        fullPath = request.form['newAbsPath']
-        parentDir = fullPath.rsplit('/', 1)[-1] 
-        userCollection.update_one({'artefactID': request.form['artefactID']},{ "$set": {'parentDir': parentDir, 'absolutePath': request.form['absolutePath'], 'modified' : datetime.utcnow() } })     
+        fullPath = request.form['absolutePath']
+        userCollection.update_one({'artefactID': request.form['artefactID']},{ "$set": {'parentArtefactID' : request.form['parentArtefactID'], 'absolutePath': request.form['absolutePath'], 'modified' : datetime.utcnow() } })     
         resp = jsonify('file successfully relocated')
         resp.status_code = 200
         resp.headers.add("Access-Control-Allow-Origin", "http://localhost:8080")
