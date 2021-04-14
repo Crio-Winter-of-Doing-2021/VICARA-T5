@@ -26,7 +26,8 @@ const Breadcrumb = () => {
     const newAbsPath = '/' + pathList.slice(0, i + 1).join('/');
     const z = pathIdList.slice(0, i + 1);
     const newAbsIdPath = '/' + z.join('/');
-    const parentArtefactID = z[z.length - 1];
+    let parentArtefactID = z[z.length - 1];
+    if (parentArtefactID === 'root') parentArtefactID = '/root';
     dispatch(
       setDriveState({
         absolutePath: newAbsPath,
