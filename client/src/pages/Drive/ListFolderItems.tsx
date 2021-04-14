@@ -1,12 +1,7 @@
 import React, { useEffect, useState } from 'react';
 // import { ClickAwayListener } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  ABSOLUTE_PATH,
-  ApiRoot,
-  ARTEFACT_ID,
-  GET_FOLDER_ITEMS,
-} from '../../assets/ts/api';
+import { ApiRoot, ARTEFACT_ID, GET_FOLDER_ITEMS } from '../../assets/ts/api';
 import { convertArrayToObj, isObjEmpty } from '../../assets/ts/utilities';
 import DottedLineLoader from '../../components/common/Loaders/Loader';
 import File from '../../components/File';
@@ -55,6 +50,7 @@ const ListFolderItems = ({ id }: { id: string }) => {
           return;
         }
         const res = resJson as IItem[];
+        // console.log(res);
         const dirs = convertArrayToObj<IItem, IItemWithId>(
           res.filter((x: IItem) => x.type === 'folder'),
           'artefactID'

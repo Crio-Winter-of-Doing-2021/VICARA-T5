@@ -5,12 +5,12 @@ import {
   Edit as EditIcon,
   CloudDownload as DownloadIcon,
   Pageview as ViewIcon,
+  FolderOpen as MoveIcon,
 } from '@material-ui/icons';
 import BootstrapTooltip from '../common/BootstrapTooltip';
 import {
   ApiRoot,
-  DELETE_FILE,
-  DELETE_FOLDER,
+  DELETE_FILE_FOLDER,
   DOWNLOAD_FILE,
   RENAME_FILE_FOLDER,
   VIEW_FILE,
@@ -30,6 +30,8 @@ import {
 import { handleKeyPress } from '../../assets/ts/utilities';
 import { IItem } from '../../redux/drive/drive.types';
 import { selectSelectedItemName } from '../../redux/drive/drive.selectors';
+import CustomMenu from '../common/Menu/CustomMenu';
+import MoveFile from './MoveFile';
 
 interface IProps {
   id: string;
@@ -107,8 +109,7 @@ const DriveItemMenu = ({ id, type }: IProps) => {
   const onDeleteClick = () => {
     const formData = new FormData();
     formData.append('artefactID', id);
-    const endpt = type === 'file' ? DELETE_FILE : DELETE_FOLDER;
-    fetch(ApiRoot + endpt, {
+    fetch(ApiRoot + DELETE_FILE_FOLDER, {
       method: 'DELETE',
       body: formData,
       headers: { username },
@@ -125,17 +126,19 @@ const DriveItemMenu = ({ id, type }: IProps) => {
       .catch((e) => console.log('Error: ', e));
   };
 
+  const handleMoveClick = () => {};
+
   return (
     <div
       className='flex justify-end'
-      style={{ position: 'fixed', marginBottom: '25px', width: '100vw' }}
+      style={{ position: 'fixed', marginBottom: '25px', right: 0 }}
     >
       <BootstrapTooltip title='Delete'>
         <IconButton onClick={onDeleteClick}>
           <DeleteIcon />
         </IconButton>
       </BootstrapTooltip>
-      <BootstrapTooltip title='Edit'>
+      <BootstrapTooltip title='Rename'>
         <IconButton onClick={() => setEditOpen(true)}>
           <EditIcon />
         </IconButton>
@@ -152,6 +155,14 @@ const DriveItemMenu = ({ id, type }: IProps) => {
               <ViewIcon />
             </IconButton>
           </BootstrapTooltip>
+          <CustomMenu
+            buttonTooltipText='Move to'
+            menuName='organize-files'
+            buttonContent={<MoveIcon />}
+            onClick={handleMoveClick}
+          >
+            <MoveFile artefactID={id} />
+          </CustomMenu>
           <Modal
             open={!!viewFileUrl}
             onClose={() => setViewFileUrl('')}
