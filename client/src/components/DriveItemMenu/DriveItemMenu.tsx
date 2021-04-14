@@ -30,6 +30,8 @@ import {
 import { handleKeyPress } from '../../assets/ts/utilities';
 import { IItem } from '../../redux/drive/drive.types';
 import { selectSelectedItemName } from '../../redux/drive/drive.selectors';
+import CustomMenu from '../common/Menu/CustomMenu';
+import MoveFile from './MoveFile';
 
 interface IProps {
   id: string;
@@ -153,11 +155,14 @@ const DriveItemMenu = ({ id, type }: IProps) => {
               <ViewIcon />
             </IconButton>
           </BootstrapTooltip>
-          <BootstrapTooltip title='Move to'>
-            <IconButton onClick={handleMoveClick}>
-              <MoveIcon />
-            </IconButton>
-          </BootstrapTooltip>
+          <CustomMenu
+            buttonTooltipText='Move to'
+            menuName='organize-files'
+            buttonContent={<MoveIcon />}
+            onClick={handleMoveClick}
+          >
+            <MoveFile artefactID={id} />
+          </CustomMenu>
           <Modal
             open={!!viewFileUrl}
             onClose={() => setViewFileUrl('')}

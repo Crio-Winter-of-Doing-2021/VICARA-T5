@@ -7,7 +7,6 @@ import {
   selectAbsPathList,
   selectAbsPathIdList,
 } from '../../redux/drive/drive.selectors';
-import BootstrapTooltip from '../common/BootstrapTooltip';
 import { NavLink } from 'react-router-dom';
 import { FOLDERS } from '../../routes/routes';
 import { setDriveState } from '../../redux/drive/drive.actions';
@@ -44,26 +43,25 @@ const Breadcrumb = () => {
       >
         {pathList.map((x, i: number) =>
           i !== pathList.length - 1 ? (
-            <BootstrapTooltip title={pathIdList[i]}>
-              <NavLink
-                to={
-                  pathIdList[i] === 'root'
-                    ? FOLDERS
-                    : FOLDERS + '/' + pathIdList[i]
-                }
-                className='nav-style'
+            <NavLink
+              key={i}
+              to={
+                pathIdList[i] === 'root'
+                  ? FOLDERS
+                  : FOLDERS + '/' + pathIdList[i]
+              }
+              className='nav-style'
+            >
+              <div
+                key={i}
+                className='pointer'
+                // color='inherit'
+                // href={pathIdList[i]}
+                onClick={() => handleClick(i)}
               >
-                <div
-                  key={i}
-                  className='pointer'
-                  // color='inherit'
-                  // href={pathIdList[i]}
-                  onClick={() => handleClick(i)}
-                >
-                  {x}
-                </div>
-              </NavLink>
-            </BootstrapTooltip>
+                {x}
+              </div>
+            </NavLink>
           ) : (
             <Typography key={i} style={{ color: 'black' }}>
               {x}
