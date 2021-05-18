@@ -28,20 +28,20 @@ print(r.certs.where())
 UPLOAD_FOLDER = './uploads'
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['SECRET_KEY'] = '***REMOVED***'
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 app.config['CLOUD_SERVICE'] = 'azure'
 app.config['SESSION_COOKIE_HTTPONLY'] = False
 #app.config['SESSION_COOKIE_SAMESITE'] = None
 #app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 #app.config['SESSION_COOKIE_SECURE'] = True
-azure_connection_string = '***REMOVED***'
+azure_connection_string = os.environ.get('azure_connection_string')
 #creating the MongoDB Atlas client to connect to database
-mongo = pymongo.MongoClient("***REMOVED***", tlsCAFile=certifi.where())
+mongo = pymongo.MongoClient(os.environ.get('mongo_connection_string'), tlsCAFile=certifi.where())
 
-aws_access_key_id = '***REMOVED***'
-aws_secret_access_key = '***REMOVED***'
+aws_access_key_id = os.environ.get('aws_access_key_id')
+aws_secret_access_key = os.environ.get('aws_secret_access_key')
 aws_region = 'ap-south-1'
-aws_bucket_name = 'vicarastorage'
+aws_bucket_name = os.environ.get('aws_bucket_name')
 aws_session =  boto3.Session(
     aws_access_key_id=aws_access_key_id,
     aws_secret_access_key=aws_secret_access_key,
